@@ -1,0 +1,163 @@
+.gorkem-sidebar-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .gorkem-sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: #FCFAFD;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 3px;
+    position: relative;
+  }
+  
+  .gorkem-logo {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    margin: 20px;
+  }
+  
+  .gorkem-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 30px;
+  }
+  
+  .gorkem-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .gorkem-option:hover {
+    border-radius: 10px;
+    color: #050505;
+    transform: scale(1.025);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 5px 10px
+  }
+
+  .gorkem-option:hover .backgroundEffect {
+    bottom: 0;
+    height: 320px;
+    width: 100%;
+    position: absolute;
+    z-index: -1;
+    background: #1b9ce3;
+    animation: popBackground 0.3s ease-in
+}
+  
+  .gorkem-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .gorkem-text {
+    font-size: 16px;
+  }
+  
+  .gorkem-active {
+    background-color: #e1e1e1;
+  }
+  
+  .gorkem-sign-button {
+    display: block;
+    width: 77%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+  }
+  .gorkem-sign-button:hover {
+    background-color: #45a049;
+  }
+  
+  .gorkem-content-container {
+    flex: 1;
+    border-radius: 4px;
+    background-color: #F5F5F5;
+    margin: 40px;
+  }
+  
+  .gorkem-selected-option {
+    display: none;
+  }
+  
+  .gorkem-selected-option.home,
+  .gorkem-selected-option.deneme {
+    display: block;
+  }
+
+
+.gorkem-form-list {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+.gorkem-form-card {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.gorkem-form-card:hover {
+    transform: translateY(-5px);
+}
+
+.gorkem-form-card-content {
+    padding: 15px;
+    text-align: center;
+}
+
+.gorkem-form-card-title {
+    margin-top: 0;
+}
+
+.gorkem-form-card-description {
+    margin-bottom: 10px;
+    color: #6c757d;
+}
+
+.gorkem-form-card-share-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.gorkem-form-card-share-button:hover {
+    color: #0056b3;
+}
+
+.gorkem-form-card-create {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.gorkem-form-card-create:hover {
+    background-color: #0062cc;
+}
+.gorkem-form-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-rows: minmax(150px, auto);
+    gap: 20px;
+    align-content: start;
+  }
