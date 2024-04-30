@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import StarRateApp from './star-rating';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,10 @@ import './container-navbar/containernavbar.css';
 import ContainerNavbar from './container-navbar/containernavbar';
 import Sign from './login-signup';
 import { EditFormComponent } from './editFormComponent';
+import { Button, Modal, Space, message } from 'antd';
+
+
+
 
 export default function NewFormsList({ }) {
     const [forms, setForms] = useState([]);
@@ -29,7 +33,22 @@ export default function NewFormsList({ }) {
     const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [selectedbutton, setSelectedButton] = useState(null);
     const [selectedEditForm, setSelectedEditForm] = useState(null);
+    const contentRef = useRef(null);
+    const [open, setOpen] = useState(false);
+
+    //    Modal kısmı
+    const showModal = () => {
+        setOpen(true);
+    };
+    const handleOk = () => {
+        setOpen(false);
+    };
+    const handleCancel = () => {
+        setOpen(false);
+    };
+
     
+
 
 
     const onStarSelect = (stars) => {
@@ -39,6 +58,7 @@ export default function NewFormsList({ }) {
     const handleFormCreate = () => {
         setShowFormCreate(true);
         setSelectedFormCreate(true);
+        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanın
     };
 
     useEffect(() => {
@@ -60,6 +80,7 @@ export default function NewFormsList({ }) {
             setSelectedForm(response.data);
             setShowFormCreate(false);
             setLoading(false);
+            contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
@@ -146,7 +167,7 @@ export default function NewFormsList({ }) {
         console.log(selectedForm);
     }, [selectedForm]);
 
-  
+
 
 
     return (
@@ -183,7 +204,7 @@ export default function NewFormsList({ }) {
 
                 {/* <button className="gorkem-sign-button btn-lg">Signn</button> */}
             </div>
-            <div  className="gorkem-content-container overflow-auto">
+            <div className="gorkem-content-container overflow-auto">
                 {/* You can put other components or content here */}
                 <div>
                     {selectedOption === 'home' && (
@@ -200,12 +221,52 @@ export default function NewFormsList({ }) {
                                                             <div className='myCardRow'>
                                                                 <h3 className='custom-form'>{form.name}</h3>
                                                                 <div className='mybtn-group'>
-                                                                    <Link to={`/formshare/${form._id}`} type='button' className='btn-share'>
+                                                                    {/* <Link to={`/formshare/${form._id}`} type='button' className='btn-share'>
                                                                         <i className="bi bi-share"></i>
                                                                         <button type="button" className="btn btn-outline-secondary ">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M15 3a3 3 0 0 1-5.175 2.066l-3.92 2.179a2.994 2.994 0 0 1 0 1.51l3.92 2.179a3 3 0 1 1-.73 1.31l-3.92-2.178a3 3 0 1 1 0-4.133l3.92-2.178A3 3 0 1 1 15 3Zm-1.5 10a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 13Zm-9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 4.5 8Zm9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 3Z"></path></svg>
                                                                             <span className="visually-hidden">Button</span>
-                                                                        </button></Link>
+                                                                        </button></Link> */}
+                                                                    <Space>
+                                                                        <Button
+                                                                            type="button" className="btn btn-outline-secondary"
+                                                                            onClick={() => {
+                                                                                Modal.confirm({
+                                                                                    title: 'Share URL',
+                                                                                    content: `http://localhost:3001/forms/formshare/${form._id}`,
+                                                                                    footer: (_, { OkBtn, CancelBtn }) => (
+                                                                                        <>
+                                                                                        <Button>
+                                                                                            <a href={`http://localhost:3001/forms/formshare/${form._id}`} target="_blank" rel="noreferrer">Open in new tab</a>
+                                                                                        </Button>
+                                                                                            <Button
+                                                                                             type='primary'
+                                                                                            onClick={() => {
+                                                                                                const url = `http://localhost:3001/forms/formshare/${form._id}`;
+                                                                                        
+                                                                                                navigator.clipboard.writeText(url)
+                                                                                                    .then(() => {
+                                                                                                        // Kopyalama başarılı, bildirim göster
+                                                                                                        message.success('Link Başarıyla Kopyalandı!');
+                                                                                                    })
+                                                                                                    .catch((error) => {
+                                                                                                        // Kopyalama başarısız, hata mesajı göster
+                                                                                                        alert('Error copying link to clipboard: ' + error);
+                                                                                                    });
+                                                                                            }}
+                                                                                            >Copy URL</Button>
+                                                                                            {/* <CancelBtn /> */}
+                                                                                            <OkBtn />
+                                                                                        </>
+                                                                                    ),
+                                                                                });
+                                                                            }}
+                                                                        >
+                                                                            <i className="bi bi-share"></i>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M15 3a3 3 0 0 1-5.175 2.066l-3.92 2.179a2.994 2.994 0 0 1 0 1.51l3.92 2.179a3 3 0 1 1-.73 1.31l-3.92-2.178a3 3 0 1 1 0-4.133l3.92-2.178A3 3 0 1 1 15 3Zm-1.5 10a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 13Zm-9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 4.5 8Zm9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 3Z"></path></svg>
+                                                                            <span className="visually-hidden">Button</span>
+                                                                        </Button>
+                                                                    </Space>
                                                                     <button onClick={() => setSelectedEditForm(form._id)} type='button' className='btn btn-outline-secondary'>
                                                                         <i className="bi bi-edit"></i>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>
@@ -232,14 +293,13 @@ export default function NewFormsList({ }) {
                                                     <div className=" col-md-12 mb-3 mb-4 ">
                                                         <div>
                                                             <h3 onClick={() => {
-                                                                
-                                                                setSelectedFormCreate(false);
+                                                                setSelectedFormCreate(!selectedFormCreate);
                                                                 handleFormCreate();
-                                                            }} className='pluscard '>+</h3>
+                                                            }} className={`pluscard ${selectedFormCreate ? 'active' : ''}`} ref={contentRef}>+</h3>
                                                         </div>
                                                     </div>
                                                     {showFormCreate && (
-                                                        <div  className="card-body  ">
+                                                        <div className="card-body" >
                                                             <FormCreate />
                                                         </div>
                                                     )}
@@ -248,16 +308,16 @@ export default function NewFormsList({ }) {
 
 
                                             {selectedForm && (
-                                                <div className="mt-4 mb-4 ">
+                                                <div className="mt-4 mb-4">
                                                     <h2 className='custom-form'>{selectedForm.name}</h2>
                                                     <p className='custom-form'>{selectedForm.description}</p>
-                                                    <h2 className=' custom-form'>Sorular</h2>
-                                                    <div className="row mt-3">
+                                                    <h2 className='custom-form' ref={contentRef}>Sorular</h2>
+                                                    <div className="row mt-3" >
                                                         {selectedForm.questions && selectedForm.questions.map((question, index) => (
                                                             <div key={question._id} className="col-md-6 mb-3">
-                                                                <div className=" card border-light mb-3">
+                                                                <div className="card border-light mb-3">
                                                                     <div className="card-body leftborder">
-                                                                        <div className='card-header formsoru'> {question.description} </div>
+                                                                        <div className='card-header formsoru'>{question.description}</div>
                                                                         <br />
                                                                         {/* Star rating component */}
                                                                         <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
@@ -286,7 +346,7 @@ export default function NewFormsList({ }) {
                         </div>
 
                     )}
-                    {selectedEditForm && (<EditFormComponent form={selectedEditForm}/>)}
+                    {selectedEditForm && (<EditFormComponent form={selectedEditForm} />)}
                     {selectedOption === 'deneme' && (<div>
                         <div className='gorkem-content-container'>
                             <BasicInfo />
