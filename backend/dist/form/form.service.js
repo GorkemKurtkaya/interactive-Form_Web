@@ -49,13 +49,13 @@ let FormService = class FormService {
         }
         return form;
     }
-    async addQuestion(formId, title, description, options) {
+    async addQuestion(formId, title, description) {
         const form = await this.formModel.findById(formId);
         if (!form) {
             throw new Error('Form not found');
         }
-        const newOptions = options.map(option => ({ value: option }));
-        const newQuestion = new this.questionModel({ title, description, options: newOptions });
+        const questionId = form.questions.length + 1;
+        const newQuestion = new this.questionModel({ title, description, questionId });
         await newQuestion.save();
         form.questions.push(newQuestion._id);
         await form.save();

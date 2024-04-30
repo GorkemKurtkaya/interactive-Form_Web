@@ -18,6 +18,9 @@ export class Question {
   @Prop({ type: Number,  default:0 ,min: 0, max: 5 }) // Rating değeri 0 ile 5 arasında olacak
   answers: Number;
 
+  @Prop({ type: Number, default: 1 }) // ID olarak kullanılacak alan, başlangıç değeri olarak 1 verildi
+  questionId: number;
+
   // İhtiyaç duyulan diğer alanlar buraya eklenebilir
 }
 

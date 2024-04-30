@@ -2,12 +2,12 @@ import React from 'react';
 import './login-signup.css';
 import { useNavigate } from 'react-router-dom';
 
-export function Sign() {
+export default function Sign() {
     const navigate = useNavigate();
 
-    
-    
-    
+
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,7 +39,7 @@ export function Sign() {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3000/auth/signup_admin', { 
+            const response = await fetch('http://localhost:3000/auth/signup_admin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -52,13 +52,13 @@ export function Sign() {
             });
             const data = await response.json();
             console.log(data);
-                if(response.status === 201){
+            if (response.status === 201) {
                 navigate('/');
-              } else{
+            } else {
                 navigate('/sign');
-        
-              } // Handle response data as needed
-         // Redirect to login page after successful sign-up
+
+            } // Handle response data as needed
+            // Redirect to login page after successful sign-up
         } catch (error) {
             console.log(error); // Handle error as needed
         }
@@ -66,16 +66,14 @@ export function Sign() {
 
     return (
         <div>
-            <a href='/mainpage' className="logo" target="_blank" rel="noreferrer">
-                <img src="https://avatars.githubusercontent.com/u/27950435?s=200&v=4" alt="" />
-            </a>
+
             <div className="section">
                 <div className="container">
                     <div className="row full-height justify-content-center">
-                        <div className="col-12 text-center align-self-center py-5">
+                        <div className="col-12 text-center align-self-center ">
                             <div className="section pb-5 pt-5 pt-sm-2 text-center">
                                 <h6 className="mb-0 pb-3"><span>Log In </span><span className='yellow-text'>Sign Up</span></h6>
-                                <input className="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
+                                <input className="checkbox" type="checkbox" id="reg-log" name="reg-log" />
                                 <label htmlFor="reg-log"></label>
                                 <div className="card-3d-wrap mx-auto">
                                     <div className="card-3d-wrapper">
@@ -87,7 +85,7 @@ export function Sign() {
                                                         <div className="form-group">
                                                             <input required type="email" name="logemail" className="form-style" placeholder="Your Email" id="logemail" autoComplete="off" />
                                                             <i className="input-icon uil uil-at"></i>
-                                                        </div>	
+                                                        </div>
                                                         <div className="form-group mt-2">
                                                             <input required type="password" name="logpass" className="form-style" placeholder="Your Password" id="logpass" autoComplete="off" />
                                                             <i className="input-icon uil uil-lock-alt"></i>
@@ -101,7 +99,9 @@ export function Sign() {
                                         <div className="card-back">
                                             <div className="center-wrap">
                                                 <div className="section text-center">
-                                                    <h1>deneme</h1>
+                                                    <a className="logo" target="_blank" rel="noreferrer">
+                                                        <img src="https://avatars.githubusercontent.com/u/27950435?s=200&v=4" alt="" />
+                                                    </a>
                                                     {/* <h4 className="mb-4 pb-3 signup-title">Sign up</h4>
                                                     <form action="" method='post' onSubmit={handleSignUp}>
                                                         <div className=" form-group">

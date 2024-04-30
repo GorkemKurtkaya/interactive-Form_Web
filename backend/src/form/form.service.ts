@@ -44,20 +44,22 @@ async editForm(formId: number, name: string, description: string): Promise<Form>
   return form;
 }
 
-async addQuestion(formId: string, title: string, description: string, options: string[]): Promise<Form> {
-    const form = await this.formModel.findById(formId);
-    if (!form) {
-        throw new Error('Form not found');
-    }
+async addQuestion(formId: string, title: string, description: string): Promise<Form> {
+  const form = await this.formModel.findById(formId);
+  if (!form) {
+      throw new Error('Form not found');
+  }
 
-    const newOptions = options.map(option => ({ value: option })); // Seçeneklerin nesnelerini oluştur
-    const newQuestion = new this.questionModel({ title, description, options: newOptions });
-    
-    // newQuestion'ın _id özelliğini doldurmak için save() metodu kullanılır
-    await newQuestion.save();
-    form.questions.push(newQuestion._id);
-    await form.save();
-    return form;
+  // Yeni soru için questionId değerini hesapla ve arttır
+  const questionId = form.questions.length + 1;
+
+  // const newOptions = options.map(option => ({ value: option }));
+  const newQuestion = new this.questionModel({ title, description, questionId });
+  
+  await newQuestion.save();
+  form.questions.push(newQuestion._id);
+  await form.save();
+  return form;
 }
 
 
@@ -131,6 +133,7 @@ async deleteQuestion(formId: string, questionId: string): Promise<Question> {
   }
   return question;
 }
+
 
 
   // Diğer işlemler buraya eklenebilir

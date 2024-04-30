@@ -89,14 +89,7 @@
     margin: 40px;
   }
   
-  .gorkem-selected-option {
-    display: none;
-  }
   
-  .gorkem-selected-option.home,
-  .gorkem-selected-option.deneme {
-    display: block;
-  }
 
 
 .gorkem-form-list {

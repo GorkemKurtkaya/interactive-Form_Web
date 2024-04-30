@@ -28,6 +28,7 @@ export declare class Question {
     title: string;
     description: string;
     answers: Number;
+    questionId: number;
 }
 export declare const QuestionSchema: import("mongoose").Schema<Question, import("mongoose").Model<Question, any, any, any, Document<unknown, any, Question> & Question & {
     _id: import("mongoose").Types.ObjectId;

@@ -22,7 +22,7 @@ async addQuestionToForm(
   @Body() questionData: Question,
   ): Promise<any> {
     const { title, description } = questionData;
-    const form = await this.formService.addQuestion(formId, title, description, []);
+    const form = await this.formService.addQuestion(formId, title, description);
     return { message: 'Soru başarıyla eklendi', form };
 }
 

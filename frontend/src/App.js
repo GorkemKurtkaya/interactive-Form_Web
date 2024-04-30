@@ -6,7 +6,7 @@ import AdditionalQuestions from './Components/AdditionalQuestions';
 import EnteredDetails from './Components/EnteredDetails'; 
 import ThankYouPage from './Components/ThankYouPage'; 
 import { About } from './Components/About'; 
-import { Sign } from './Components/login-signup';
+import  Sign  from './Components/login-signup';
 import  Formcreate  from './Components/formcreate';
 import FormsList from './Components/getforms';
 import FormShare from './Components/formshare';

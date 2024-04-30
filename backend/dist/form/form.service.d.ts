@@ -34,7 +34,7 @@ export declare class FormService {
     createForm(name: string, description: string): Promise<Form>;
     deleteForm(formId: number): Promise<Form>;
     editForm(formId: number, name: string, description: string): Promise<Form>;
-    addQuestion(formId: string, title: string, description: string, options: string[]): Promise<Form>;
+    addQuestion(formId: string, title: string, description: string): Promise<Form>;
     getAllForms(): Promise<Form[]>;
     getFormDetails(formId: string): Promise<Form>;
     createRestrictedForm(adminId: string, name: string, description: string): Promise<Form>;

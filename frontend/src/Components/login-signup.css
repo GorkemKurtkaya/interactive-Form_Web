@@ -99,7 +99,7 @@ h6 span {
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   perspective: 800px;
-  margin-top: 60px;
+  margin-top: 30px;
 }
 .card-3d-wrapper {
   width: 100%;
@@ -272,16 +272,14 @@ h6 span {
 
 .logo {
   position: absolute;
-  top: 30px;
-  right: 30px;
-  display: block;
-  z-index: 100;
-  transition: all 250ms linear;
+  justify-content: center;
+  display: center;
+  margin-bottom: 50px;
 }
 .logo img {
-  height: 26px;
+  height: 200px;
+  justify-content: center;
   width: auto;
-  display: block;
 }
 
 h6 span:first-child {

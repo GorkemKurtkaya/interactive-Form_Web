@@ -26,7 +26,7 @@ let FormController = class FormController {
     }
     async addQuestionToForm(formId, questionData) {
         const { title, description } = questionData;
-        const form = await this.formService.addQuestion(formId, title, description, []);
+        const form = await this.formService.addQuestion(formId, title, description);
         return { message: 'Soru başarıyla eklendi', form };
     }
     async getFormDetails(formId) {
