@@ -13,6 +13,7 @@ import ContainerNavbar from './container-navbar/containernavbar';
 import Sign from './login-signup';
 import { EditFormComponent } from './editFormComponent';
 import { Button, Modal, Space, message } from 'antd';
+import NewFormsAnswers from './Answers/answers';
 
 
 
@@ -342,9 +343,18 @@ export default function NewFormsList({ }) {
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                        </div>
 
+                                
+                            )}
+                            {selectedCategory === "Yanıtlar" && (
+                                <div>
+                                    <div className="gorkem-content-container">
+                                        <NewFormsAnswers />
+                                    </div>
+                                </div>
+                            )}
+                                 
+                        </div>
                     )}
                     {selectedEditForm && (<EditFormComponent form={selectedEditForm} />)}
                     {selectedOption === 'deneme' && (<div>

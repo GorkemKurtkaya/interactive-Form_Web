@@ -11,9 +11,9 @@ import  Formcreate  from './Components/formcreate';
 import FormsList from './Components/getforms';
 import FormShare from './Components/formshare';
 import Navbar from './Components/navbar';
-import axios from 'axios';
 import Sidebar from './Components/sidebar/sidebar';
 import NewFormsList from './Components/newgetforms';
+import {Spinner} from './Components/spinner';
   
 function App() { 
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Giriş durumu state'i eklendi
@@ -99,11 +99,23 @@ useEffect(() => {
             <h1 className='uyarımesaj'>Yetkisiz Giriş</h1>
         </div>}
           />
+          <Route path='/noWhere' element={<Spinner />} />
           <Route path='/sign' element={<Sign />} />
           <Route 
             path='/questions'
             element={<AdditionalQuestions addQuestionData={addQuestionData} />} 
+          />
+
+          <Route 
+            path='/forms/formshare/:formId'
+            element={<FormShare />} 
           /> 
+          {/* Render the ThankYouPage component */} 
+          <Route 
+            path='/thanks'
+            element={<ThankYouPage />} 
+          /> 
+
           </Routes>
       ) : (
           <Routes>
@@ -147,10 +159,7 @@ useEffect(() => {
             path='/formslist'
             element={<FormsList />} 
           />
-          <Route 
-            path='/formshare/:formId'
-            element={<FormShare />} 
-          />
+          
           <Route 
             path='/navbar'
             element={<Navbar />} 

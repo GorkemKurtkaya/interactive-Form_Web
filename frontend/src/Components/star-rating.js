@@ -40,7 +40,7 @@ function StarRateApp({ onStarSelect }) {
         <div style={styles.container}>
             <div style={styles.stars}>
                 {stars.map((_, index) => (
-                     <div className="d-flex flex-column align-items-center justify-content-end px-2">
+                     <div key={index} className="d-flex flex-column align-items-center justify-content-end px-2">
                     <FaStar
                         key={index}
                         size={24}

@@ -1,8 +1,14 @@
 // ThankYouPage.js 
 
 import React from 'react'; 
+import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd';
 
 function ThankYouPage() { 
+	const navigate = useNavigate();
+	const navigator = () => {
+		navigate('/nowhere');
+	}
 return ( 
 	<div className="container-fluid qform"> 
 			<div className="col-md-5 m-auto"> 
@@ -12,6 +18,7 @@ return (
 							<h3>Cevapların İçin Teşekkürler!</h3> 
 							<h6>Bu Sayfayı Kapatabilirsin.</h6> 
 						</div> 
+						<Button onClick={navigator}>Hiç bir yere gitmek ister misin?</Button>
 					</div> 
 				</div> 
 			</div> 
