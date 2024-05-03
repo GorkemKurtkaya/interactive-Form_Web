@@ -41,8 +41,9 @@ let FormController = class FormController {
     async getOptions(formId) {
         return this.formService.getOptions(formId);
     }
-    async saveAnswer(formId, questionId, stars) {
-        return this.formService.saveAnswer(questionId, stars);
+    async saveAnswer(formId, questionId, body) {
+        const { stars, userId } = body;
+        return this.formService.saveAnswer(formId, questionId, userId, stars);
     }
     async deleteForm(formId) {
         return this.formService.deleteForm(formId);
@@ -52,6 +53,11 @@ let FormController = class FormController {
     }
     async deleteQuestion(formId, questionId) {
         return this.formService.deleteQuestion(formId, questionId);
+    }
+    async createUser(formId, body) {
+        const { name } = body;
+        const user = await this.formService.createUserAndAddToForm(name, formId);
+        return user;
     }
 };
 exports.FormController = FormController;
@@ -101,9 +107,9 @@ __decorate([
     (0, common_1.Post)(':formId/questions/:questionId/answers'),
     __param(0, (0, common_1.Param)('formId')),
     __param(1, (0, common_1.Param)('questionId')),
-    __param(2, (0, common_1.Body)('stars')),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Number]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "saveAnswer", null);
 __decorate([
@@ -129,6 +135,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "deleteQuestion", null);
+__decorate([
+    (0, common_1.Post)("createUser/:formId"),
+    __param(0, (0, common_1.Param)('formId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], FormController.prototype, "createUser", null);
 exports.FormController = FormController = __decorate([
     (0, common_1.Controller)('forms'),
     __metadata("design:paramtypes", [form_service_1.FormService])

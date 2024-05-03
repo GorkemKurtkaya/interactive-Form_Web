@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Option, OptionSchema } from './option.schema';
+import mongoose from 'mongoose';
 
 export type QuestionDocument = Question & Document;
 
@@ -12,16 +12,14 @@ export class Question {
   @Prop()
   description: string;
 
-  // @Prop({ type: [OptionSchema] })
-  // options: Option[];
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'Form' })
+  formId: mongoose.Types.ObjectId;
 
-  @Prop({ type: Number,  default:0 ,min: 0, max: 5 }) // Rating değeri 0 ile 5 arasında olacak
-  answers: Number;
+  @Prop({ type: [{ userId: mongoose.Types.ObjectId, stars: Number }] })
+  answers: { userId: mongoose.Types.ObjectId; stars: number }[];
 
-  @Prop({ type: Number, default: 1 }) // ID olarak kullanılacak alan, başlangıç değeri olarak 1 verildi
+  @Prop({ type: Number, default: 1 })
   questionId: number;
-
-  // İhtiyaç duyulan diğer alanlar buraya eklenebilir
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);

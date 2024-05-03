@@ -9,34 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QuestionSchema = exports.Question = void 0;
+exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-const mongoose_2 = require("mongoose");
-let Question = class Question {
+let User = class User {
 };
-exports.Question = Question;
+exports.User = User;
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Question.prototype, "title", void 0);
+], User.prototype, "name", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Question.prototype, "description", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: mongoose_2.default.Types.ObjectId, ref: 'Form' }),
-    __metadata("design:type", mongoose_2.default.Types.ObjectId)
-], Question.prototype, "formId", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: [{ userId: mongoose_2.default.Types.ObjectId, stars: Number }] }),
-    __metadata("design:type", Array)
-], Question.prototype, "answers", void 0);
+    (0, mongoose_1.Prop)({ type: Map, of: String }),
+    __metadata("design:type", Map)
+], User.prototype, "answers", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: Number, default: 1 }),
     __metadata("design:type", Number)
-], Question.prototype, "questionId", void 0);
-exports.Question = Question = __decorate([
+], User.prototype, "userId", void 0);
+exports.User = User = __decorate([
     (0, mongoose_1.Schema)()
-], Question);
-exports.QuestionSchema = mongoose_1.SchemaFactory.createForClass(Question);
-//# sourceMappingURL=question.schema.js.map
+], User);
+exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
+//# sourceMappingURL=user.js.map

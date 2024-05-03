@@ -6,6 +6,7 @@ import { Form } from './schemas/form.schema';
 import { Question } from './schemas/question.schema';
 import { FormDto } from './dto/form.dto';
 import { Option } from './schemas/option.schema';
+import { User } from './schemas/user';
 
 @Controller('forms')
 export class FormController {
@@ -17,14 +18,17 @@ export class FormController {
   }
 
   @Post(':formId/questions')
-async addQuestionToForm(
-  @Param('formId') formId: string,
-  @Body() questionData: Question,
-  ): Promise<any> {
-    const { title, description } = questionData;
-    const form = await this.formService.addQuestion(formId, title, description);
-    return { message: 'Soru başarıyla eklendi', form };
-}
+  async addQuestionToForm(
+    @Param('formId') formId: string,
+    @Body() questionData: Question,
+    ): Promise<any> {
+      const { title, description } = questionData;
+      const form = await this.formService.addQuestion(formId, title, description);
+      return { message: 'Soru başarıyla eklendi', form };
+  }
+
+
+
 
   @Get(':formId')
   async getFormDetails(@Param('formId') formId: string): Promise<Form> {
@@ -47,13 +51,14 @@ async addQuestionToForm(
   }
 
   @Post(':formId/questions/:questionId/answers')
-  async saveAnswer(
-    @Param('formId') formId: string,
-    @Param('questionId') questionId: string,
-    @Body('stars') stars: number,
-  ) {
-    return this.formService.saveAnswer(questionId, stars);
-  }
+async saveAnswer(
+  @Param('formId') formId: string,
+  @Param('questionId') questionId: string,
+  @Body() body: any,
+) {
+  const { stars, userId } = body; // Gövdeden userId ve stars değerlerini al
+  return this.formService.saveAnswer(formId, questionId, userId, stars); // saveAnswer yöntemini çağır
+}
 
   @Post(":formId/delete")
   async deleteForm(@Param('formId') formId: number): Promise<Form> {
@@ -69,6 +74,16 @@ async addQuestionToForm(
   async deleteQuestion(@Param('formId') formId: string, @Param('questionId') questionId: string): Promise<Question> {
     return this.formService.deleteQuestion(formId, questionId);
   }
+
+  @Post("createUser/:formId")
+async createUser(
+  @Param('formId') formId: string,
+  @Body() body: { name: string }
+): Promise<User> {
+  const { name } = body;
+  const user = await this.formService.createUserAndAddToForm(name, formId); // Kullanıcı oluşturulup forma eklendi
+  return user;
+}
 
 
 

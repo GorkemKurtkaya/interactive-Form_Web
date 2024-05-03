@@ -7,6 +7,8 @@ import { Form, FormDocument } from './schemas/form.schema';
 import { Question, QuestionDocument } from './schemas/question.schema';
 import { Option, OptionSchema,OptionDocument } from './schemas/option.schema';
 import mongoose from 'mongoose';
+import { Types } from 'mongoose';
+import { User } from './schemas/user';
 
 
 @Injectable()
@@ -15,6 +17,7 @@ export class FormService {
     @InjectModel(Form.name) private formModel: Model<FormDocument>,
     @InjectModel(Question.name) private questionModel: Model<QuestionDocument>,
     @InjectModel(Option.name) private optionModel: Model<OptionDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>, 
   ) {}
   
 
@@ -54,7 +57,7 @@ async addQuestion(formId: string, title: string, description: string): Promise<F
   const questionId = form.questions.length + 1;
 
   // const newOptions = options.map(option => ({ value: option }));
-  const newQuestion = new this.questionModel({ title, description, questionId });
+  const newQuestion = new this.questionModel({ title, description, questionId, formId: form._id });
   
   await newQuestion.save();
   form.questions.push(newQuestion._id);
@@ -107,24 +110,69 @@ async getAllForms(): Promise<Form[]> {
     return this.optionModel.find({ questionId: { $in: questionIds } }).exec();
   }
 
-  async saveAnswer(questionId: string, stars: number): Promise<Question> {
-    // ObjectId'ye dönüştürme
-    const validObjectId = mongoose.Types.ObjectId.isValid(questionId);
-    if (!validObjectId) {
-        throw new Error('Invalid questionId');
+  async saveAnswer(formId: string, questionId: string, userId: string, stars: number): Promise<Question> {
+    // ObjectId'ye dönüştürme ve geçerlilik kontrolü
+    const validFormId = mongoose.Types.ObjectId.isValid(formId);
+    const validQuestionId = mongoose.Types.ObjectId.isValid(questionId);
+    const validUserId = mongoose.Types.ObjectId.isValid(userId);
+  
+    if (!validFormId || !validQuestionId || !validUserId) {
+      throw new Error('Invalid IDs');
     }
-    const objectId = new mongoose.Types.ObjectId(questionId);
-
+  
     // Question belgesini bulma ve işlemlerin devamı
-    const question = await this.questionModel.findById(objectId);
+    const question = await this.questionModel.findById(questionId);
     if (!question) {
-        throw new Error('Question not found');
+      throw new Error('Question not found');
     }
-
-    question.answers = stars;
+  
+    // Kullanıcının cevabını bulma veya yeni cevap ekleme
+    let userAnswerIndex = -1;
+    for (let i = 0; i < question.answers.length; i++) {
+      if (question.answers[i].userId.toString() === userId) {
+        userAnswerIndex = i;
+        break;
+      }
+    }
+  
+    if (userAnswerIndex !== -1) {
+      // Kullanıcıya ait cevap zaten varsa güncelle
+      question.answers[userAnswerIndex].stars = stars;
+    } else {
+      // Kullanıcıya ait cevap yoksa ekle
+      question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars });
+    }
+  
+    // Soruyu kaydet
     await question.save();
+    
     return question;
+  }
+
+
+  async createUserAndAddToForm(name: string, formId: string): Promise<User> {
+    // Yeni kullanıcı oluşturma
+    const lastUser = await this.userModel.findOne().sort({ userId: -1 }); // En son eklenen kullanıcıyı bul
+    let newUserId = 1; // Yeni kullanıcının ID'si, varsayılan olarak 1
+    if (lastUser) {
+        newUserId = lastUser.userId + 1; // Son kullanıcının ID'sine 1 ekleyerek yeni ID oluştur
+    }
+    const newUser = new this.userModel({ name, userId: newUserId, answers: {} });
+    await newUser.save();
+
+    // Kullanıcıyı forma ekleme
+    const form = await this.formModel.findById(formId);
+    if (!form) {
+        throw new Error('Form not found');
+    }
+    // Convert userId to string and add it to the form's users list
+    form.users.push(newUser._id.toString()); // Yeni kullanıcının _id'sini string olarak ekliyoruz
+    await form.save();
+
+    return newUser;
 }
+
+
 
 async deleteQuestion(formId: string, questionId: string): Promise<Question> {
   const question = await this.questionModel.findByIdAndDelete(questionId).exec();

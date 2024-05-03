@@ -23,17 +23,14 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { Document } from 'mongoose';
-import mongoose from 'mongoose';
-export type FormDocument = Form & Document;
-export declare class Form {
+export type UserDocument = User & Document;
+export declare class User {
     name: string;
-    description: string;
-    questions: mongoose.Types.ObjectId[];
-    formId: number;
-    users: string[];
+    answers: Map<string, string>;
+    userId: number;
 }
-export declare const FormSchema: mongoose.Schema<Form, mongoose.Model<Form, any, any, any, Document<unknown, any, Form> & Form & {
-    _id: mongoose.Types.ObjectId;
-}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Form, Document<unknown, {}, mongoose.FlatRecord<Form>> & mongoose.FlatRecord<Form> & {
-    _id: mongoose.Types.ObjectId;
+export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, Document<unknown, any, User> & User & {
+    _id: import("mongoose").Types.ObjectId;
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, Document<unknown, {}, import("mongoose").FlatRecord<User>> & import("mongoose").FlatRecord<User> & {
+    _id: import("mongoose").Types.ObjectId;
 }>;

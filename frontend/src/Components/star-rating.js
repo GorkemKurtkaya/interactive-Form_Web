@@ -12,7 +12,7 @@ const colors = {
 function StarRateApp({ onStarSelect }) {
     const [currentValue, setCurrentValue] = useState(0);
     const [hoverValue, setHoverValue] = useState(undefined);
-    const stars = Array(7).fill(0);
+    const stars = Array(5).fill(0);
 
     const handleClick = value => {
         setCurrentValue(value);

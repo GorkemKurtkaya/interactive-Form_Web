@@ -18,7 +18,10 @@ export class Form {
   @Prop({ type: Number, default: 1 }) // ID olarak kullanılacak alan, başlangıç değeri olarak 1 verildi
   formId: number;
 
+  @Prop({ type: [String], default: [] }) // Formu tamamlayan kullanıcıların ID'lerini içerecek dizi
+  users: string[];
+
   // İhtiyaç duyulan diğer alanlar buraya eklenebilir
-}
+} 
 
 export const FormSchema = SchemaFactory.createForClass(Form);

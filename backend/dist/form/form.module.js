@@ -14,6 +14,7 @@ const form_service_1 = require("./form.service");
 const form_schema_1 = require("./schemas/form.schema");
 const question_schema_1 = require("./schemas/question.schema");
 const option_schema_1 = require("./schemas/option.schema");
+const user_1 = require("./schemas/user");
 let FormModule = class FormModule {
 };
 exports.FormModule = FormModule;
@@ -23,6 +24,7 @@ exports.FormModule = FormModule = __decorate([
             mongoose_1.MongooseModule.forFeature([{ name: form_schema_1.Form.name, schema: form_schema_1.FormSchema }]),
             mongoose_1.MongooseModule.forFeature([{ name: question_schema_1.Question.name, schema: question_schema_1.QuestionSchema }]),
             mongoose_1.MongooseModule.forFeature([{ name: 'Option', schema: option_schema_1.OptionSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: 'User', schema: user_1.UserSchema }]),
         ],
         controllers: [form_controller_1.FormController],
         providers: [form_service_1.FormService],

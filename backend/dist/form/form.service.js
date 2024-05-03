@@ -20,11 +20,13 @@ const form_schema_1 = require("./schemas/form.schema");
 const question_schema_1 = require("./schemas/question.schema");
 const option_schema_1 = require("./schemas/option.schema");
 const mongoose_3 = require("mongoose");
+const user_1 = require("./schemas/user");
 let FormService = class FormService {
-    constructor(formModel, questionModel, optionModel) {
+    constructor(formModel, questionModel, optionModel, userModel) {
         this.formModel = formModel;
         this.questionModel = questionModel;
         this.optionModel = optionModel;
+        this.userModel = userModel;
     }
     async createForm(name, description) {
         const lastForm = await this.formModel.findOne().sort({ formId: -1 });
@@ -55,7 +57,7 @@ let FormService = class FormService {
             throw new Error('Form not found');
         }
         const questionId = form.questions.length + 1;
-        const newQuestion = new this.questionModel({ title, description, questionId });
+        const newQuestion = new this.questionModel({ title, description, questionId, formId: form._id });
         await newQuestion.save();
         form.questions.push(newQuestion._id);
         await form.save();
@@ -95,19 +97,48 @@ let FormService = class FormService {
         const questionIds = form.questions.map(question => question._id);
         return this.optionModel.find({ questionId: { $in: questionIds } }).exec();
     }
-    async saveAnswer(questionId, stars) {
-        const validObjectId = mongoose_3.default.Types.ObjectId.isValid(questionId);
-        if (!validObjectId) {
-            throw new Error('Invalid questionId');
+    async saveAnswer(formId, questionId, userId, stars) {
+        const validFormId = mongoose_3.default.Types.ObjectId.isValid(formId);
+        const validQuestionId = mongoose_3.default.Types.ObjectId.isValid(questionId);
+        const validUserId = mongoose_3.default.Types.ObjectId.isValid(userId);
+        if (!validFormId || !validQuestionId || !validUserId) {
+            throw new Error('Invalid IDs');
         }
-        const objectId = new mongoose_3.default.Types.ObjectId(questionId);
-        const question = await this.questionModel.findById(objectId);
+        const question = await this.questionModel.findById(questionId);
         if (!question) {
             throw new Error('Question not found');
         }
-        question.answers = stars;
+        let userAnswerIndex = -1;
+        for (let i = 0; i < question.answers.length; i++) {
+            if (question.answers[i].userId.toString() === userId) {
+                userAnswerIndex = i;
+                break;
+            }
+        }
+        if (userAnswerIndex !== -1) {
+            question.answers[userAnswerIndex].stars = stars;
+        }
+        else {
+            question.answers.push({ userId: new mongoose_3.default.Types.ObjectId(userId), stars });
+        }
         await question.save();
         return question;
+    }
+    async createUserAndAddToForm(name, formId) {
+        const lastUser = await this.userModel.findOne().sort({ userId: -1 });
+        let newUserId = 1;
+        if (lastUser) {
+            newUserId = lastUser.userId + 1;
+        }
+        const newUser = new this.userModel({ name, userId: newUserId, answers: {} });
+        await newUser.save();
+        const form = await this.formModel.findById(formId);
+        if (!form) {
+            throw new Error('Form not found');
+        }
+        form.users.push(newUser._id.toString());
+        await form.save();
+        return newUser;
     }
     async deleteQuestion(formId, questionId) {
         const question = await this.questionModel.findByIdAndDelete(questionId).exec();
@@ -123,7 +154,9 @@ exports.FormService = FormService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(form_schema_1.Form.name)),
     __param(1, (0, mongoose_1.InjectModel)(question_schema_1.Question.name)),
     __param(2, (0, mongoose_1.InjectModel)(option_schema_1.Option.name)),
+    __param(3, (0, mongoose_1.InjectModel)(user_1.User.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model,
         mongoose_2.Model])
 ], FormService);

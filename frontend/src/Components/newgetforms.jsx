@@ -193,16 +193,16 @@ export default function NewFormsList({ }) {
                         </span>
                         <span className="gorkem-text">Deneme</span>
                     </li>
-                    <li
+                    {/* <li
                         className={`gorkem-sign-button btn-lg ${selectedOption === 'sign' ? 'active' : ''}`}
                         onClick={() => setSelectedOption('sign')}
                     >
                         Sign
-                    </li>
+                    </li> */}
                 </ul>
 
 
-                {/* <button className="gorkem-sign-button btn-lg">Signn</button> */}
+                <button className="gorkem-sign-button btn-lg">Logout</button>
             </div>
             <div className="gorkem-content-container overflow-auto">
                 {/* You can put other components or content here */}

@@ -26,11 +26,13 @@ import { Model } from 'mongoose';
 import { Form, FormDocument } from './schemas/form.schema';
 import { Question, QuestionDocument } from './schemas/question.schema';
 import { Option, OptionDocument } from './schemas/option.schema';
+import { User } from './schemas/user';
 export declare class FormService {
     private formModel;
     private questionModel;
     private optionModel;
-    constructor(formModel: Model<FormDocument>, questionModel: Model<QuestionDocument>, optionModel: Model<OptionDocument>);
+    private readonly userModel;
+    constructor(formModel: Model<FormDocument>, questionModel: Model<QuestionDocument>, optionModel: Model<OptionDocument>, userModel: Model<User>);
     createForm(name: string, description: string): Promise<Form>;
     deleteForm(formId: number): Promise<Form>;
     editForm(formId: number, name: string, description: string): Promise<Form>;
@@ -41,6 +43,7 @@ export declare class FormService {
     private isAdminUser;
     getQuestions(formId: string): Promise<Question[]>;
     getOptions(formId: string): Promise<Option[]>;
-    saveAnswer(questionId: string, stars: number): Promise<Question>;
+    saveAnswer(formId: string, questionId: string, userId: string, stars: number): Promise<Question>;
+    createUserAndAddToForm(name: string, formId: string): Promise<User>;
     deleteQuestion(formId: string, questionId: string): Promise<Question>;
 }

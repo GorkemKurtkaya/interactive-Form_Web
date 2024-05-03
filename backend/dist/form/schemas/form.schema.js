@@ -31,6 +31,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Number, default: 1 }),
     __metadata("design:type", Number)
 ], Form.prototype, "formId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: [String], default: [] }),
+    __metadata("design:type", Array)
+], Form.prototype, "users", void 0);
 exports.Form = Form = __decorate([
     (0, mongoose_1.Schema)()
 ], Form);
