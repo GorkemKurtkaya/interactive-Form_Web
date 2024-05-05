@@ -1,0 +1,53 @@
+.gorkem-navbar{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    margin-top: 30px;
+    justify-content: space-between;
+    padding: 10px;
+    visibility: hidden;
+}
+
+.gorkem-nav-menu{
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 30px;
+    color : #000000;
+    font-size: 15px;
+    font-weight: 500;
+    visibility: visible;
+}
+
+.gorkem-nav-menu li{
+    display: flex;
+    flex-direction:   column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.gorkem-nav-menu hr{
+    border: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 10px;
+    background: rgb(0, 0, 0);
+}
+
+
+
+.nav-cart-count{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -35px;
+    margin-left: -55px;
+    border-radius: 11px;
+    font-size: 14px;
+    background: red;
+    color: white;
+}
