@@ -39,8 +39,8 @@ export default function NewFormsAnswers() {
             }));
 
             // Fetch questions and answers for the selected form
-            
-            
+
+
             setSelectedForm(prevState => ({
                 ...prevState,
                 users: usersWithNames,
@@ -52,20 +52,39 @@ export default function NewFormsAnswers() {
             // Handle error (e.g., show error message to the user)
         }
     };
-    
+
 
     const columns = [
         {
             title: 'User Name',
-            dataIndex: 'userName',
+            dataIndex: 'name',
             key: 'userName',
         },
+
         ...(selectedForm?.questions || []).map((question, index) => ({
-            title: `Question ${index + 1}`,
-            dataIndex: `answers[${index}].stars`, // Assuming answers are stored in 'stars' field
-            key: `answer${index}`,
-            render: (stars) => stars === undefined ? '-' : stars, // Render '-' if stars is undefined
+            title: `Soru ${index + 1}`,
+            dataIndex: 'answers',
+            key: `answers${index}`,
+            render: (answers) => {
+                const stars = answers && answers[index + 1]?.stars; // Check if answers array exists before accessing its elements
+                return stars !== undefined ? stars : '-'; // Render stars if defined, otherwise '-'
+            },
         })),
+        {
+            title: 'Ortalama',
+            dataIndex: 'answers',
+            key: 'average',
+            render: (answers) => {
+                if (!Array.isArray(answers) || answers.length === 0) {
+                    return '-';
+                }
+    
+                const totalStars = answers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
+                const average = totalStars / answers.length;
+    
+                return average ? average.toFixed(2) : '-';
+            },
+        },
     ];
 
     return (

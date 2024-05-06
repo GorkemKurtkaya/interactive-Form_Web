@@ -114,11 +114,13 @@ export default function FormShare() {
                                 type="navigation"
                                 current={currentQuestionIndex}
                                 onChange={setCurrentQuestionIndex}
-                                className="site-navigation-steps"
+                                className="site-navigation-steps ms-2"
                             >
                                 <Step key={0} title="Başla" />
                                 {selectedForm && selectedForm.questions.map((question, index) => (
-                                    <Step key={index + 1} title={`Soru ${index + 1}`} />
+                                    <Step key={index + 1} title={
+                                        selectedForm.questions.length>10 ? ` ${index + 1}` :
+                                        `Soru ${index + 1}`} />
                                 ))}
                             </Steps>
 

@@ -1,48 +1,45 @@
-
-
-
-
-body{ 
+body {
   font-family: cursive;
   height: 100vh;
-	font-weight: 300;
-	font-size: 15px;
-	line-height: 1.7;
-	color: #1f2029;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1f2029;
   background-image: url('https://coolbackgrounds.io/images/backgrounds/index/sea-edge-79ab30e2.png');
   background-size: cover;
   background-repeat: no-repeat;
 
-	overflow-x: hidden;
-} 
-  
-.navbar{ 
-  width : 59vw; 
-  text-decoration: none; 
-  height: 5vh; 
-  top: 0%; 
-  position: fixed; 
-} 
-  
-.qform{ 
-  margin-top: 10vh; 
-  margin-bottom: 5vh; 
-  z-index: 0; 
-} 
-.badge{ 
-  color: black; 
-    
-} 
-  
-.footer { 
-  background-color: green; 
-  position: fixed; 
-  width: 100%; 
-  bottom: 0; 
-  color: white; 
+  overflow-x: hidden;
 }
 
-.nextbutton{
+.navbar {
+  width: 59vw;
+  text-decoration: none;
+  height: 5vh;
+  top: 0%;
+  position: fixed;
+}
+
+.qform {
+  margin-top: 10vh;
+  margin-bottom: 5vh;
+  z-index: 0;
+}
+
+.badge {
+  color: black;
+
+}
+
+.footer {
+  background-color: green;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  color: white;
+}
+
+.nextbutton {
   background-color: #4CAF50;
   border: none;
   color: white;
@@ -53,7 +50,7 @@ body{
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-  
+
 }
 
 .formCard:hover {
@@ -61,8 +58,9 @@ body{
   cursor: pointer;
 }
 
-.card-text{
-  font-family: "Gill Sans", sans-serif;  color: #000000; ;
+.card-text {
+  font-family: "Gill Sans", sans-serif;
+  color: #000000;
   text-align: center;
   font-size: 1.75rem;
   margin-top: 0;
@@ -85,7 +83,8 @@ body{
   display: flex;
   flex-direction: column;
 }
-.pluscard{
+
+.pluscard {
   background-color: #f8f9fa;
   border: 1px solid rgba(0, 0, 0, .125);
   border-radius: .25rem;
@@ -99,7 +98,7 @@ body{
   text-align: center;
 }
 
-.pluscard:hover{
+.pluscard:hover {
   background-color: #41cece;
   cursor: pointer;
 }
@@ -111,9 +110,9 @@ body{
 }
 
 .btn-next {
-  font-size: 20px; 
-  background-color: #007bff; 
-  border-color: #007bff; 
+  font-size: 20px;
+  background-color: #007bff;
+  border-color: #007bff;
 }
 
 .step-indicator {
@@ -131,12 +130,12 @@ body{
 }
 
 .step.done {
-  background-color: #5cb85c; 
+  background-color: #5cb85c;
 }
 
 .custom-input {
-  font-size: 18px; 
-  border-color: #5cb5b8; 
+  font-size: 18px;
+  border-color: #5cb5b8;
 }
 
 .custom-form-group label {
@@ -147,17 +146,19 @@ body{
   font-size: 1.2rem;
 }
 
-.custom-form{
+.custom-form {
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
   font-weight: 800;
   font-style: normal;
+
 }
 
-.leftborder{
+.leftborder {
   border: 3px solid #a4c5b2;
 }
-.formsoru{
+
+.formsoru {
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -179,7 +180,7 @@ body{
   }
 }
 
-.uyarımesaj{
+.uyarımesaj {
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -193,8 +194,19 @@ body{
   margin-left: 1rem;
 }
 
-.mybtn-group{
+.mybtn-group {
   margin-left: auto;
   display: flex;
   align-items: center;
+}
+
+.gorkem-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 2000px; /* increase the width to 800px */
+  position: absolute; /* add this line to position the container */
+  left: 50%; /* add this line to center the container horizontally */
+  transform: translateX(-50%); /* add this line to move the container back by half its width */
 }
