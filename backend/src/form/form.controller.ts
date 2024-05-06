@@ -85,8 +85,11 @@ async createUser(
   return user;
 }
 
+@Get(':formId/users')
+async getUsers(@Param('formId') formId: string): Promise<User[]> {
+  return this.formService.getUsers(formId);
 
-
+}
 }
 
 

@@ -147,6 +147,14 @@ let FormService = class FormService {
         }
         return question;
     }
+    async getUsers(formId) {
+        const form = await this.formModel.findById(formId).exec();
+        if (!form) {
+            throw new Error('Form not found');
+        }
+        const users = await this.userModel.find({ _id: { $in: form.users } }).exec();
+        return users;
+    }
 };
 exports.FormService = FormService;
 exports.FormService = FormService = __decorate([

@@ -20,4 +20,5 @@ export declare class FormController {
     createUser(formId: string, body: {
         name: string;
     }): Promise<User>;
+    getUsers(formId: string): Promise<User[]>;
 }

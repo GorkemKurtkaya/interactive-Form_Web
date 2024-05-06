@@ -182,6 +182,15 @@ async deleteQuestion(formId: string, questionId: string): Promise<Question> {
   return question;
 }
 
+async getUsers(formId: string): Promise<User[]> {
+  const form = await this.formModel.findById(formId).exec();
+  if (!form) {
+    throw new Error('Form not found');
+  }
+  const users = await this.userModel.find({ _id: { $in: form.users } }).exec();
+  return users;
+}
+
 
 
   // Diğer işlemler buraya eklenebilir

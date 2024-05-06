@@ -139,10 +139,10 @@ export default function FormShare() {
 
                                     {currentQuestionIndex > 0 && (
                                         <>
-                                            <h3 className='custom-form' style={{ textAlign: 'center' }}>Soru {currentQuestionIndex} / {selectedForm.questions.length}</h3>
+                                            {/* <h3 className='custom-form' style={{ textAlign: 'center' }}>Soru {currentQuestionIndex} / {selectedForm.questions.length}</h3> */}
                                             <div className="row justify-content-center">
                                                 {selectedForm.questions && (
-                                                    <div className="col-md-6 mb-3">
+                                                    <div className="col-md-8 mb-3">
                                                         <div className="card">
                                                             <div className="card-body">
                                                                 <p>{selectedForm.questions[currentQuestionIndex - 1].description}</p>

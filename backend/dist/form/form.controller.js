@@ -59,6 +59,9 @@ let FormController = class FormController {
         const user = await this.formService.createUserAndAddToForm(name, formId);
         return user;
     }
+    async getUsers(formId) {
+        return this.formService.getUsers(formId);
+    }
 };
 exports.FormController = FormController;
 __decorate([
@@ -143,6 +146,13 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Get)(':formId/users'),
+    __param(0, (0, common_1.Param)('formId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FormController.prototype, "getUsers", null);
 exports.FormController = FormController = __decorate([
     (0, common_1.Controller)('forms'),
     __metadata("design:paramtypes", [form_service_1.FormService])

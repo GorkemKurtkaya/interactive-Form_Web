@@ -1,22 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal, Space, message } from 'antd';
 import axios from 'axios';
-import { useEffect, useState, useRef } from 'react';
 import { Table } from 'antd';
 import classNames from 'classnames';
 
 export default function NewFormsAnswers() {
-
     const [forms, setForms] = useState([]);
     const [selectedForm, setSelectedForm] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [showFormCreate, setShowFormCreate] = useState(false);
-
-    const [menu, setMenu] = useState("Formlar");
-
     const contentRef = useRef(null);
-
-
 
     useEffect(() => {
         const fetchForms = async () => {
@@ -25,6 +17,7 @@ export default function NewFormsAnswers() {
                 setForms(response.data);
             } catch (error) {
                 console.error('Error fetching forms:', error);
+                // Handle error (e.g., show error message to the user)
             }
         };
         fetchForms();
@@ -35,110 +28,42 @@ export default function NewFormsAnswers() {
             setLoading(true);
             const response = await axios.get(`http://localhost:3000/forms/${formId}`);
             setSelectedForm(response.data);
-            setShowFormCreate(false);
             setLoading(false);
             contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Seçilen formun kullanıcılarını getir
+            const usersResponse = await axios.get(`http://localhost:3000/forms/${formId}/users`);
+            const usersWithNames = usersResponse.data.map(user => ({
+                ...user,
+                userName: user.name // İsimlerin görünmesi için
+            }));
+            setSelectedForm(prevState => ({
+                ...prevState,
+                users: usersWithNames
+            }));
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
-        }
-        // Fetch questions for the selected form
-        try {
-            setLoading(true);
-            const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
-            setSelectedForm(prevState => ({ ...prevState, questions: questionsResponse.data }));
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching questions:', error);
-            setLoading(false);
+            
         }
     };
-    // const columns = [
-    //     {
-    //         title: 'Form İsmi',
-    //         width: 100,
-    //         dataIndex: 'name',
-    //         key: 'name',
-    //         fixed: 'left',
-    //     },
-    //     {
-    //         title: 'Kullanıcı',
-    //         width: 100,
-    //         dataIndex: 'name',
-    //         key: 'name',
-    //         fixed: 'left',
-    //         sorter: true,
-    //     },
-    //     {
-    //         title: 'Column 1',
-    //         dataIndex: 'address',
-    //         key: '1',
-    //     },
-    //     {
-    //         title: 'Column 2',
-    //         dataIndex: 'address',
-    //         key: '2',
-    //     },
-    //     {
-    //         title: 'Column 3',
-    //         dataIndex: 'address',
-    //         key: '3',
-    //     },
-    //     {
-    //         title: 'Column 4',
-    //         dataIndex: 'address',
-    //         key: '4',
-    //     },
-    //     {
-    //         title: 'Column 5',
-    //         dataIndex: 'address',
-    //         key: '5',
-    //     },
-    //     {
-    //         title: 'Column 6',
-    //         dataIndex: 'address',
-    //         key: '6',
-    //     },
-    //     {
-    //         title: 'Column 7',
-    //         dataIndex: 'address',
-    //         key: '7',
-    //     },
-    //     {
-    //         title: 'Column 8',
-    //         dataIndex: 'address',
-    //         key: '8',
-    //     },
-    //     {
-    //         title: 'Action',
-    //         key: 'operation',
-    //         fixed: 'right',
-    //         width: 100,
-    //         render: () => <a>action</a>,
-    //     },
-    // ];
 
-    // const data = [
-    //     {
-    //         key: '1',
-    //         name: 'John Brown',
-    //         age: 32,
-    //         address: 'New York Park',
-    //     },
-    //     {
-    //         key: '2',
-    //         name: 'Jim Green',
-    //         age: 40,
-    //         address: 'London Park',
-    //     },
-    // ];
+    const columns = [
+        {
+            title: 'User Name',
+            dataIndex: 'userName',
+            key: 'userName',
+        },
+        ...(selectedForm?.questions || []).map((question, index) => ({
+            title: `Question ${index + 1}`,
+            dataIndex: `answer${index}`,
+            key: `answer${index}`,
+            render: (text) => text || '-',
+        })),
+    ];
+
 
     return (
-        // <Table
-        //     columns={columns}
-        //     dataSource={data}
-        //     scroll={{ x: 1300 }}
-        // />
         <div className="col-md-12">
             <div className="mt-3 md-12">
                 <div>
@@ -152,12 +77,13 @@ export default function NewFormsAnswers() {
                                             <div className='mybtn-group'>
                                                 <Space>
                                                     <Button
-                                                        type="button" className="btn btn-outline-secondary"
+                                                        type="button"
+                                                        className="btn btn-outline-secondary"
                                                         onClick={() => {
                                                             Modal.confirm({
                                                                 title: 'Share URL',
                                                                 content: `http://localhost:3001/forms/formshare/${form._id}`,
-                                                                footer: (_, { OkBtn, CancelBtn }) => (
+                                                                footer: (_, { OkBtn }) => (
                                                                     <>
                                                                         <Button>
                                                                             <a href={`http://localhost:3001/forms/formshare/${form._id}`} target="_blank" rel="noreferrer">Open in new tab</a>
@@ -169,16 +95,13 @@ export default function NewFormsAnswers() {
 
                                                                                 navigator.clipboard.writeText(url)
                                                                                     .then(() => {
-                                                                                        // Kopyalama başarılı, bildirim göster
                                                                                         message.success('Link Başarıyla Kopyalandı!');
                                                                                     })
                                                                                     .catch((error) => {
-                                                                                        // Kopyalama başarısız, hata mesajı göster
                                                                                         alert('Error copying link to clipboard: ' + error);
                                                                                     });
                                                                             }}
                                                                         >Copy URL</Button>
-                                                                        {/* <CancelBtn /> */}
                                                                         <OkBtn />
                                                                     </>
                                                                 ),
@@ -190,10 +113,8 @@ export default function NewFormsAnswers() {
                                                         <span className="visually-hidden">Button</span>
                                                     </Button>
                                                 </Space>
-
                                             </div>
                                         </div>
-                                        {/* yazının boyutunu değiştirmek için */}
                                         <p className={classNames('', {
                                             'text-muted': form.description.length <= 10,
                                             "font-sm": form.description.length > 10
@@ -202,9 +123,23 @@ export default function NewFormsAnswers() {
                                 </div>
                             ))}
                         </div>
+                        {selectedForm && (
+                            <div className="mt-4 mb-4">
+                                <h2 className='custom-form'>{selectedForm.name}</h2>
+                                <p className='custom-form'>{selectedForm.description}</p>
+                                <div className="col-md-12" ref={contentRef}>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={selectedForm.users || []}
+                                        loading={loading}
+                                        scroll={{ x: 'max-content' }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
         </div>
     );
-};
+}

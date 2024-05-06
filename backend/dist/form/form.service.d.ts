@@ -46,4 +46,5 @@ export declare class FormService {
     saveAnswer(formId: string, questionId: string, userId: string, stars: number): Promise<Question>;
     createUserAndAddToForm(name: string, formId: string): Promise<User>;
     deleteQuestion(formId: string, questionId: string): Promise<Question>;
+    getUsers(formId: string): Promise<User[]>;
 }
