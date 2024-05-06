@@ -85,8 +85,8 @@ export default function FormShare() {
         try {
             setLoading(true);
             const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
+                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,    
                 stars: selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id],
-                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,
                 userId: userId // Kullanıcı ID'sini gönder
             });
             console.log(response.data);

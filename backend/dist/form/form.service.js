@@ -122,6 +122,12 @@ let FormService = class FormService {
             question.answers.push({ userId: new mongoose_3.default.Types.ObjectId(userId), stars });
         }
         await question.save();
+        const user = await this.userModel.findById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        user.answers.push({ questionId: new mongoose_3.default.Types.ObjectId(questionId), userId: new mongoose_3.default.Types.ObjectId(userId), stars });
+        await user.save();
         return question;
     }
     async createUserAndAddToForm(name, formId) {

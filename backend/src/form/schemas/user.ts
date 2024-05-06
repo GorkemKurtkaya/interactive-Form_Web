@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import mongoose from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -8,15 +9,11 @@ export class User {
   @Prop()
   name: string;
 
-  @Prop({ type: Map, of: String }) // Soru ID'si ve cevapları içeren
-  answers: Map<string, string>;
+  @Prop({ type: [{ questionId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId, stars: Number }] })
+  answers: { questionId: mongoose.Types.ObjectId; userId: mongoose.Types.ObjectId; stars: number }[];
 
-    @Prop({ type: Number, default: 1 }) // ID olarak kullanılacak alan, başlangıç değeri olarak 1 verildi
-    userId: number;
-  
-  
-
-  // İhtiyaç duyulan diğer alanlar buraya eklenebilir
+  @Prop({ type: Number, default: 1 }) // ID olarak kullanılacak alan, başlangıç değeri olarak 1 verildi
+  userId: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -15,7 +15,7 @@ export default function BasicInfo({ formId, onSetUserId, onNext }) {
         try {
             const response = await axios.post(`http://localhost:3000/forms/createUser/${formId}`, { name });
             console.log(response.data); // Oluşturulan kullanıcı hakkında bilgi alabilirsiniz
-            onSetUserId(response.data.userId); // Kullanıcı kimliğini ayarla
+            onSetUserId(response.data._id); // Kullanıcı kimliğini ayarla
             onNext(); // Sonraki adıma geç
         } catch (error) {
             console.error('Error creating user:', error);

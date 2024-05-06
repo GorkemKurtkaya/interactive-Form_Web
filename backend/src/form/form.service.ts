@@ -146,6 +146,16 @@ async getAllForms(): Promise<Form[]> {
     // Soruyu kaydet
     await question.save();
     
+    // Kullanıcı belgesini bulma ve cevapları ekleyin
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    
+    // Kullanıcıya ait cevapları ekle
+    user.answers.push({ questionId: new mongoose.Types.ObjectId(questionId), userId: new mongoose.Types.ObjectId(userId), stars });
+    await user.save();
+    
     return question;
   }
 

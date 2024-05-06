@@ -39,19 +39,12 @@ export default function NewFormsAnswers() {
             }));
 
             // Fetch questions and answers for the selected form
-            const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
-            const questionsWithAnswers = questionsResponse.data.map(question => ({
-                ...question,
-                answers: question.answers.map(answer => ({
-                    userName: usersWithNames.find(user => user._id === answer.userId)?.userName || 'Unknown',
-                    stars: answer.stars
-                }))
-            }));
+            
             
             setSelectedForm(prevState => ({
                 ...prevState,
                 users: usersWithNames,
-                questions: questionsWithAnswers
+                questions: response.data.questions
             }));
         } catch (error) {
             console.error('Error fetching form details:', error);

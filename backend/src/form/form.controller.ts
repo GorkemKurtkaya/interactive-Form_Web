@@ -51,14 +51,14 @@ export class FormController {
   }
 
   @Post(':formId/questions/:questionId/answers')
-async saveAnswer(
-  @Param('formId') formId: string,
-  @Param('questionId') questionId: string,
-  @Body() body: any,
-) {
-  const { stars, userId } = body; // Gövdeden userId ve stars değerlerini al
-  return this.formService.saveAnswer(formId, questionId, userId, stars); // saveAnswer yöntemini çağır
-}
+  async saveAnswer(
+    @Param('formId') formId: string,
+    @Param('questionId') questionId: string,
+    @Body() body: any,
+  ) {
+    const { stars, userId } = body; // Gövdeden userId ve stars değerlerini al
+    return this.formService.saveAnswer(formId, questionId, userId, stars); // saveAnswer yöntemini çağır
+  }
 
   @Post(":formId/delete")
   async deleteForm(@Param('formId') formId: number): Promise<Form> {
