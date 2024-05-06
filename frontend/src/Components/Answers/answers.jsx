@@ -31,22 +31,35 @@ export default function NewFormsAnswers() {
             setLoading(false);
             contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-            // Seçilen formun kullanıcılarını getir
+            // Fetch users for the selected form
             const usersResponse = await axios.get(`http://localhost:3000/forms/${formId}/users`);
             const usersWithNames = usersResponse.data.map(user => ({
                 ...user,
-                userName: user.name // İsimlerin görünmesi için
+                userName: user.name // Assuming user name is stored in 'name' field
             }));
+
+            // Fetch questions and answers for the selected form
+            const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
+            const questionsWithAnswers = questionsResponse.data.map(question => ({
+                ...question,
+                answers: question.answers.map(answer => ({
+                    userName: usersWithNames.find(user => user._id === answer.userId)?.userName || 'Unknown',
+                    stars: answer.stars
+                }))
+            }));
+            
             setSelectedForm(prevState => ({
                 ...prevState,
-                users: usersWithNames
+                users: usersWithNames,
+                questions: questionsWithAnswers
             }));
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
-            
+            // Handle error (e.g., show error message to the user)
         }
     };
+    
 
     const columns = [
         {
@@ -56,12 +69,11 @@ export default function NewFormsAnswers() {
         },
         ...(selectedForm?.questions || []).map((question, index) => ({
             title: `Question ${index + 1}`,
-            dataIndex: `answer${index}`,
+            dataIndex: `answers[${index}].stars`, // Assuming answers are stored in 'stars' field
             key: `answer${index}`,
-            render: (text) => text || '-',
+            render: (stars) => stars === undefined ? '-' : stars, // Render '-' if stars is undefined
         })),
     ];
-
 
     return (
         <div className="col-md-12">
