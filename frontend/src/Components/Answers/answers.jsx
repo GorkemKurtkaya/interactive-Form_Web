@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Table } from 'antd';
 import classNames from 'classnames';
 
+
 export default function NewFormsAnswers() {
     const [forms, setForms] = useState([]);
     const [selectedForm, setSelectedForm] = useState(null);
@@ -101,8 +102,8 @@ export default function NewFormsAnswers() {
                                             <div className='mybtn-group'>
                                                 <Space>
                                                     <Button
-                                                        type="button"
-                                                        className="btn btn-outline-secondary"
+                                                        type="default"
+                                                        className=""
                                                         onClick={() => {
                                                             Modal.confirm({
                                                                 title: 'Share URL',
@@ -113,7 +114,7 @@ export default function NewFormsAnswers() {
                                                                             <a href={`http://localhost:3001/forms/formshare/${form._id}`} target="_blank" rel="noreferrer">Open in new tab</a>
                                                                         </Button>
                                                                         <Button
-                                                                            type='primary'
+                                                                            type=''
                                                                             onClick={() => {
                                                                                 const url = `http://localhost:3001/forms/formshare/${form._id}`;
 

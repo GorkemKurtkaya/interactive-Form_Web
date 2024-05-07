@@ -71,6 +71,7 @@ export default function Sign() {
             if (response.status === 201) {
                 sessionStorage.setItem('token', data.token); // Token'ı sessionStorage'e kaydet
                 navigate('/newformslist');
+                window.location.reload();
             } else {
                 console.log(data.message);
                 navigate('/login');

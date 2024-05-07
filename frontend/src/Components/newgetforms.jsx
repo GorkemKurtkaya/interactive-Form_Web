@@ -12,7 +12,6 @@ import { EditFormComponent } from './editFormComponent';
 import { Button, Modal, Space, message } from 'antd';
 import NewFormsAnswers from './Answers/answers';
 import { useNavigate } from 'react-router-dom';
-import TokenCheck from './tokencheck';
 
 
 
@@ -181,8 +180,7 @@ export default function NewFormsList() {
 
 
     return (
-        <div>
-        <TokenCheck>
+
         <div className="gorkem-sidebar-container">
             <div className="gorkem-sidebar">
                 <div className="gorkem-logo" style={{ backgroundImage: `url(${"https://avatars.githubusercontent.com/u/27950435?s=200&v=4"})` }}></div>
@@ -233,15 +231,9 @@ export default function NewFormsList() {
                                                             <div className='myCardRow'>
                                                                 <h3 className='custom-form'>{form.name}</h3>
                                                                 <div className='mybtn-group'>
-                                                                    {/* <Link to={`/formshare/${form._id}`} type='button' className='btn-share'>
-                                                                        <i className="bi bi-share"></i>
-                                                                        <button type="button" className="btn btn-outline-secondary ">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M15 3a3 3 0 0 1-5.175 2.066l-3.92 2.179a2.994 2.994 0 0 1 0 1.51l3.92 2.179a3 3 0 1 1-.73 1.31l-3.92-2.178a3 3 0 1 1 0-4.133l3.92-2.178A3 3 0 1 1 15 3Zm-1.5 10a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 13Zm-9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 4.5 8Zm9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 3Z"></path></svg>
-                                                                            <span className="visually-hidden">Button</span>
-                                                                        </button></Link> */}
                                                                     <Space>
                                                                         <Button
-                                                                            type="button" className="btn btn-outline-secondary"
+                                                                            type="default" 
                                                                             onClick={(event) => {
                                                                                 event.stopPropagation();
                                                                                 Modal.confirm({
@@ -280,14 +272,14 @@ export default function NewFormsList() {
                                                                             <span className="visually-hidden">Button</span>
                                                                         </Button>
                                                                     </Space>
-                                                                    <button onClick={(event) => { event.stopPropagation(); setSelectedEditForm(form._id) }} type='button' className='btn btn-outline-secondary'>
+                                                                    <Button onClick={(event) => { event.stopPropagation(); setSelectedEditForm(form._id) }} type='default'>
                                                                         <i className="bi bi-edit"></i>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>
-                                                                    </button>
-                                                                    <button onClick={(event) => { event.stopPropagation(); handledeleteForm(form.formId) }} type='button' className='btn btn-outline-secondary'>
+                                                                    </Button>
+                                                                    <Button onClick={(event) => { event.stopPropagation(); handledeleteForm(form.formId) }} type='default' >
                                                                         <i className="bi bi-trash"></i>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
-                                                                    </button>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75ZM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15ZM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25Z"></path></svg>
+                                                                    </Button>
                                                                 </div>
                                                             </div>
                                                             {/* yazının boyutunu değiştirmek için */}
@@ -404,6 +396,6 @@ export default function NewFormsList() {
                 </div>
             </div>
         </div>
-        </TokenCheck> </div>
+
     );
 }
