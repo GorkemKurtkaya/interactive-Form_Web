@@ -37,4 +37,15 @@ import {
     validateToken(@Body('token') token: string): { valid: boolean } {
     return this.validateToken(token);
   }
+
+  @Get('/get_admin_by_token')
+  async getCompanyByToken(
+    @Headers('Authorization') authHeader: string,
+  ): Promise<Admin | undefined> {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Geçersiz veya eksik yetki bilgisi');
+    }
+    const token = authHeader.split(' ')[1];
+    return this.authService.getAdminByToken(token);
+  }
 }

@@ -42,4 +42,5 @@ export declare class AuthService {
     validateToken(token: string): Promise<{
         valid: boolean;
     }>;
+    getAdminByToken(token: string): Promise<Admin | undefined>;
 }

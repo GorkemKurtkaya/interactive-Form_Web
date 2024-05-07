@@ -62,6 +62,17 @@ let AuthService = class AuthService {
             return { valid: false };
         }
     }
+    async getAdminByToken(token) {
+        try {
+            const decodedToken = this.jwtService.verify(token);
+            const adminId = decodedToken.id;
+            const user = await this.adminModel.findById(adminId);
+            return user;
+        }
+        catch (error) {
+            throw new common_2.UnauthorizedException('Geçersiz veya süresi dolmuş token');
+        }
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

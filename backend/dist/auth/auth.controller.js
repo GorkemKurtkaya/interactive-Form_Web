@@ -30,6 +30,13 @@ let AuthController = class AuthController {
     validateToken(token) {
         return this.validateToken(token);
     }
+    async getCompanyByToken(authHeader) {
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            throw new common_1.UnauthorizedException('Geçersiz veya eksik yetki bilgisi');
+        }
+        const token = authHeader.split(' ')[1];
+        return this.authService.getAdminByToken(token);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -53,6 +60,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Object)
 ], AuthController.prototype, "validateToken", null);
+__decorate([
+    (0, common_1.Get)('/get_admin_by_token'),
+    __param(0, (0, common_1.Headers)('Authorization')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getCompanyByToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
