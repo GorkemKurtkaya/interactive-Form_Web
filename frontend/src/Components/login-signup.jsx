@@ -1,11 +1,47 @@
-import React from 'react';
 import './login-signup.css';
 import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
 
 export default function Sign() {
     const navigate = useNavigate();
+    const isLoggedIn = sessionStorage.getItem("token");
+    const [token, setToken] = useState(false);
+    const [userData, setUserData] = useState(null);
 
 
+    useEffect(() => {
+        if (isLoggedIn) {
+            const fetchUserData = async () => {
+                if (isLoggedIn) {
+                    try {
+                        const response = await fetch(
+                            "http://localhost:3000/auth/get_admin_by_token",
+                            {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: "Bearer " + isLoggedIn,
+                                },
+                            }
+                        );
+
+                        const data = await response.json();
+
+                        if (data._id) {
+                            setToken(true);
+                            setUserData(data);
+                        } else {
+                            setToken(false);
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
+                }
+            };
+
+            fetchUserData();
+        }
+    }, [isLoggedIn]);
 
 
 

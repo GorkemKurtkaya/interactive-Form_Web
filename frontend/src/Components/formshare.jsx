@@ -19,7 +19,6 @@ export default function FormShare() {
     const [selectedResponses, setSelectedResponses] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [userId, setUserId] = useState(null); // Kullanıcı ID'sini tutmak için state eklendi
-    const { current, setCurrent } = useState(0);
     const [starSelected, setStarSelected] = useState(false);
 
 
@@ -109,6 +108,7 @@ export default function FormShare() {
     const handleNextQuestion = () => {
         if (selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id] !== undefined) {
             setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            setStarSelected(false); 
         } else {
             // Kullanıcı yıldızları seçmeden devam edemez uyarısı verebilirsiniz
             alert("Lütfen yıldızları seçerek devam edin.");

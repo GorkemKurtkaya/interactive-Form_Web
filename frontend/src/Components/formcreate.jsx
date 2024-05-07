@@ -12,6 +12,7 @@ export default function FormCreate({ addBasicData }) {
     const navigate = useNavigate();
 
     const submit = (e) => {
+      
         e.preventDefault();
         fetch('http://localhost:3000/forms/createform', { 
             method: 'POST',
@@ -24,6 +25,7 @@ export default function FormCreate({ addBasicData }) {
             })
         }).then(response => {
             navigate('/newformslist');
+            window.location.reload();
             return response.json();
         }).catch(error => console.log(error));
     };
@@ -72,7 +74,7 @@ export default function FormCreate({ addBasicData }) {
                     </div> 
                     <br />
                     {/* Submit button */} 
-                    <button type='submit' className='btn btn-success mx-3 position-absolute bottom-0 end-0 btn-next'>Next</button> 
+                    <button type='submit'  className='btn btn-success mx-3 position-absolute bottom-0 end-0 btn-next'>Next</button> 
                   </form>
                   {/* Step indicators */} 
                     {/* <div className="step-indicator"> 

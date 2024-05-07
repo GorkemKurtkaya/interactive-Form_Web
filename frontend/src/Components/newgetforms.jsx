@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import StarRateApp from './star-rating';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
 import './sidebar/sidebar.css';
-import EnteredDetails from './EnteredDetails';
 import BasicInfo from './BasicInfo';
 import FormCreate from './formcreate';
 import classNames from 'classnames';
@@ -14,11 +11,12 @@ import Sign from './login-signup';
 import { EditFormComponent } from './editFormComponent';
 import { Button, Modal, Space, message } from 'antd';
 import NewFormsAnswers from './Answers/answers';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
-export default function NewFormsList({ }) {
+export default function NewFormsList() {
     const [forms, setForms] = useState([]);
     const [selectedForm, setSelectedForm] = useState(null);
     const [questionTitle, setQuestionTitle] = useState("");
@@ -29,13 +27,13 @@ export default function NewFormsList({ }) {
     const [selectedOption, setSelectedOption] = useState('home');
     const [showFormCreate, setShowFormCreate] = useState(false);
     const [selectedFormCreate, setSelectedFormCreate] = useState(true);
-    const [menu, setMenu] = useState("Formlar");
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedQuestion, setSelectedQuestion] = useState(null);
-    const [selectedbutton, setSelectedButton] = useState(null);
     const [selectedEditForm, setSelectedEditForm] = useState(null);
     const contentRef = useRef(null);
     const [open, setOpen] = useState(false);
+    
+    const navigate = useNavigate();
 
     //    Modal kısmı
     const showModal = () => {
@@ -59,7 +57,7 @@ export default function NewFormsList({ }) {
     const handleFormCreate = () => {
         setShowFormCreate(true);
         setSelectedFormCreate(true);
-        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanın
+        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanınca sayfa aşağı iniyor
     };
 
     useEffect(() => {
@@ -126,6 +124,8 @@ export default function NewFormsList({ }) {
         try {
             setLoading(true);
             const response = await axios.post(`http://localhost:3000/forms/${formId}/delete`);
+            setSelectedForm(response.data.form);
+            window.location.reload();
         } catch (error) {
             console.error('Error deleting form:', error);
             setLoading(false);
@@ -169,6 +169,12 @@ export default function NewFormsList({ }) {
         console.log(selectedForm);
     }, [selectedForm]);
 
+    const handleLogout = () => {
+        window.localStorage.removeItem("token");
+        sessionStorage.removeItem('token'); // Token'ı sessionStorage'den kaldır
+        navigate('/sign'); // Çıkış yapıldığında login sayfasına yönlendir
+        window.location.reload(); // Sayfayı yenile
+    };
 
 
 
@@ -204,7 +210,7 @@ export default function NewFormsList({ }) {
                 </ul>
 
 
-                <button className="gorkem-sign-button btn-lg">Logout</button>
+                <button className="gorkem-sign-button btn-lg" onClick={handleLogout}>Logout</button>
             </div>
             <div className="gorkem-content-container overflow-auto">
 
@@ -298,8 +304,9 @@ export default function NewFormsList({ }) {
                                                             <h3 onClick={() => {
                                                                 setSelectedFormCreate(!selectedFormCreate);
                                                                 handleFormCreate();
-                                                            }} className={`pluscard ${selectedFormCreate ? 'active' : ''}`} ref={contentRef}>+</h3>
-                                                        </div>
+                                                            }} 
+                                                            className={`pluscard ${ selectedFormCreate ? 'active' : ''}`} ref={contentRef} >+</h3>
+                                                        </div >
                                                     </div>
                                                     {showFormCreate && (
                                                         <div className="card-body" >
