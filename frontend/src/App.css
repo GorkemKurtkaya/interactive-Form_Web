@@ -210,3 +210,11 @@ body {
   left: 50%; /* add this line to center the container horizontally */
   transform: translateX(-50%); /* add this line to move the container back by half its width */
 }
+.tablo-yazi{
+  font-family: "Oswald", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  color: #000000;
+  font-size: 1.75rem;
+
+}

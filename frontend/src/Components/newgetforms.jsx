@@ -48,7 +48,7 @@ export default function NewFormsList({ }) {
         setOpen(false);
     };
 
-    
+
 
 
 
@@ -86,7 +86,7 @@ export default function NewFormsList({ }) {
             console.error('Error fetching form details:', error);
             setLoading(false);
         }
-        // Fetch questions for the selected form
+        // Soruları getir
         try {
             setLoading(true);
             const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
@@ -158,6 +158,7 @@ export default function NewFormsList({ }) {
             setOptions([]);
             setLoading(false);
             handleFormSelect(selectedForm._id);
+            contentRef.current.scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error('Error adding question:', error);
             setLoading(false);
@@ -206,7 +207,7 @@ export default function NewFormsList({ }) {
                 <button className="gorkem-sign-button btn-lg">Logout</button>
             </div>
             <div className="gorkem-content-container overflow-auto">
-                {/* You can put other components or content here */}
+
                 <div>
                     {selectedOption === 'home' && (
                         <div className="col-md-12">
@@ -231,30 +232,31 @@ export default function NewFormsList({ }) {
                                                                     <Space>
                                                                         <Button
                                                                             type="button" className="btn btn-outline-secondary"
-                                                                            onClick={() => {
+                                                                            onClick={(event) => {
+                                                                                event.stopPropagation();
                                                                                 Modal.confirm({
                                                                                     title: 'Share URL',
                                                                                     content: `http://localhost:3001/forms/formshare/${form._id}`,
                                                                                     footer: (_, { OkBtn, CancelBtn }) => (
                                                                                         <>
-                                                                                        <Button>
-                                                                                            <a href={`http://localhost:3001/forms/formshare/${form._id}`} target="_blank" rel="noreferrer">Open in new tab</a>
-                                                                                        </Button>
+                                                                                            <Button>
+                                                                                                <a href={`http://localhost:3001/forms/formshare/${form._id}`} target="_blank" rel="noreferrer">Open in new tab</a>
+                                                                                            </Button>
                                                                                             <Button
-                                                                                             type='primary'
-                                                                                            onClick={() => {
-                                                                                                const url = `http://localhost:3001/forms/formshare/${form._id}`;
-                                                                                        
-                                                                                                navigator.clipboard.writeText(url)
-                                                                                                    .then(() => {
-                                                                                                        // Kopyalama başarılı, bildirim göster
-                                                                                                        message.success('Link Başarıyla Kopyalandı!');
-                                                                                                    })
-                                                                                                    .catch((error) => {
-                                                                                                        // Kopyalama başarısız, hata mesajı göster
-                                                                                                        alert('Error copying link to clipboard: ' + error);
-                                                                                                    });
-                                                                                            }}
+                                                                                                type='primary'
+                                                                                                onClick={() => {
+                                                                                                    const url = `http://localhost:3001/forms/formshare/${form._id}`;
+
+                                                                                                    navigator.clipboard.writeText(url)
+                                                                                                        .then(() => {
+                                                                                                            // Kopyalama başarılı, bildirim göster
+                                                                                                            message.success('Link Başarıyla Kopyalandı!');
+                                                                                                        })
+                                                                                                        .catch((error) => {
+                                                                                                            // Kopyalama başarısız, hata mesajı göster
+                                                                                                            alert('Error copying link to clipboard: ' + error);
+                                                                                                        });
+                                                                                                }}
                                                                                             >Copy URL</Button>
                                                                                             {/* <CancelBtn /> */}
                                                                                             <OkBtn />
@@ -268,11 +270,11 @@ export default function NewFormsList({ }) {
                                                                             <span className="visually-hidden">Button</span>
                                                                         </Button>
                                                                     </Space>
-                                                                    <button onClick={() => setSelectedEditForm(form._id)} type='button' className='btn btn-outline-secondary'>
+                                                                    <button onClick={(event) => { event.stopPropagation(); setSelectedEditForm(form._id) }} type='button' className='btn btn-outline-secondary'>
                                                                         <i className="bi bi-edit"></i>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>
                                                                     </button>
-                                                                    <button onClick={() => handledeleteForm(form.formId)} type='button' className='btn btn-outline-secondary'>
+                                                                    <button onClick={(event) => { event.stopPropagation(); handledeleteForm(form.formId) }} type='button' className='btn btn-outline-secondary'>
                                                                         <i className="bi bi-trash"></i>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
                                                                     </button>
@@ -312,30 +314,47 @@ export default function NewFormsList({ }) {
                                                 <div className="mt-4 mb-4">
                                                     <h2 className='custom-form'>{selectedForm.name}</h2>
                                                     <p className='custom-form'>{selectedForm.description}</p>
-                                                    <h2 className='custom-form' ref={contentRef}>Sorular</h2>
-                                                    <div className="row mt-3" >
-                                                        {selectedForm.questions && selectedForm.questions.map((question, index) => (
-                                                            <div key={question._id} className="col-md-6 mb-3">
-                                                                <div className="card border-light mb-3">
-                                                                    <div className="card-body leftborder">
-                                                                        <div className='card-header formsoru'>{question.description}</div>
-                                                                        <br />
-                                                                        {/* Star rating component */}
-                                                                        <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
-                                                                        <br />
-                                                                        <button onClick={() => handleDeleteQuestion(selectedForm.formId, question._id)} type='button' className='btn btn-outline-secondary'>
-                                                                            <i className="bi bi-trash"></i>
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
-                                                                        </button>
+                                                    <div>
+                                                        <h2 className='custom-form' ref={contentRef}>Sorular</h2>
+                                                        <div className="row mt-3" >
+                                                            {selectedForm.questions && selectedForm.questions.map((question, index) => (
+                                                                <div key={question._id} className="col-md-6 mb-3">
+                                                                    <div className="card border-light mb-3">
+                                                                        <div className="card-body leftborder">
+                                                                            <div className='card-header formsoru'>{question.description}</div>
+                                                                            <br />
+                                                                            {/* Star rating component */}
+                                                                            <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
+                                                                            <br />
+                                                                            <button onClick={() => handleDeleteQuestion(selectedForm.formId, question._id)} type='button' className='btn btn-outline-secondary'>
+                                                                                <i className="bi bi-trash"></i>
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        ))}
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                     <div className="mt-4 form-control my-2 custom-input">
-                                                        <h3 className='custom-form'>Soru Ekle</h3>
-                                                        <input type="text" value={questionDescription} onChange={(e) => setQuestionDescription(e.target.value)} placeholder="Soru Açıklaması" className="form-control mb-2" />
-                                                        <button onClick={handleAddQuestion} className="btn btn-success" disabled={loading}>{loading ? "Ekleniyor..." : "Soruyu Ekle"}</button>
+                                                        <h3 className='custom-form' ref={contentRef}>Soru Ekle</h3>
+                                                        <input
+                                                            type="text"
+                                                            value={questionDescription}
+                                                            onChange={(e) => setQuestionDescription(e.target.value)}
+                                                            placeholder="Soru Açıklaması"
+                                                            className="form-control mb-2"
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') {
+                                                                    e.preventDefault();
+                                                                    handleAddQuestion();
+                                                                }
+                                                            }}
+                                                        />
+                                                        
+                                                        <Button onClick={handleAddQuestion}  type='submit' className="btn btn-success" disabled={loading}>
+                                                            {loading ? "Ekleniyor..." : "Soruyu Ekle"}
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             )}
@@ -344,7 +363,7 @@ export default function NewFormsList({ }) {
                                     </div>
                                 </div>
 
-                                
+
                             )}
                             {selectedCategory === "Yanıtlar" && (
                                 <div>
@@ -353,7 +372,7 @@ export default function NewFormsList({ }) {
                                     </div>
                                 </div>
                             )}
-                                 
+
                         </div>
                     )}
                     {selectedEditForm && (<EditFormComponent form={selectedEditForm} />)}

@@ -151,7 +151,7 @@ export default function NewFormsAnswers() {
                             <div className="mt-4 mb-4">
                                 <h2 className='custom-form'>{selectedForm.name}</h2>
                                 <p className='custom-form'>{selectedForm.description}</p>
-                                <div className="col-md-12" ref={contentRef}>
+                                <div className="col-md-12 tablo-yazi" ref={contentRef}>
                                     <Table
                                         columns={columns}
                                         dataSource={selectedForm.users || []}

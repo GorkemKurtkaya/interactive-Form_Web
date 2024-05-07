@@ -20,14 +20,18 @@ export default function FormShare() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [userId, setUserId] = useState(null); // Kullanıcı ID'sini tutmak için state eklendi
     const { current, setCurrent } = useState(0);
+    const [starSelected, setStarSelected] = useState(false);
+
+
 
     const onStarSelect = (index, stars) => {
-        setSelectedStars( prevStars => {
+        setSelectedStars(prevStars => {
             const newStars = [...prevStars];
             newStars[index] = stars;
             return newStars;
-        })
-    };
+    });
+    setStarSelected(true); // Set to true when stars are selected
+};
 
     const handleSetUserId = (id) => {
         setUserId(id);
@@ -73,9 +77,7 @@ export default function FormShare() {
         fetchForm();
     }, [formId]);
 
-    const handleNextQuestion = () => {
-        setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-    };
+
 
     useEffect(() => {
         console.log("selectedStars: ", selectedStars);
@@ -92,14 +94,24 @@ export default function FormShare() {
             console.log(response.data);
             setLoading(false);
             handleNextQuestion();
-
+    
             if (currentQuestionIndex === selectedForm.questions.length) {
                 navigate("/thanks");
             }
-
+    
         } catch (error) {
             console.error('Error submitting response:', error);
             setLoading(false);
+        }
+    };
+    
+    // Kullanıcı yıldızları seçmeden sonraki soruya geçemez
+    const handleNextQuestion = () => {
+        if (selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id] !== undefined) {
+            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+        } else {
+            // Kullanıcı yıldızları seçmeden devam edemez uyarısı verebilirsiniz
+            alert("Lütfen yıldızları seçerek devam edin.");
         }
     };
 
@@ -157,7 +169,7 @@ export default function FormShare() {
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                                                 <button onClick={() => setCurrentQuestionIndex(prevIndex => Math.max(0, prevIndex - 1))} className='btn btn-secondary' style={{ marginRight: '10px' }}>Geri</button>
-                                                <button onClick={() => handleSubmit()} className='btn btn-success' style={{ marginRight: '10px' }}>{currentQuestionIndex === selectedForm.questions.length ? 'Sonucu Gönder' : 'Gönder'}</button>
+                                                <button onClick={() => handleSubmit()} className='btn btn-success' style={{ marginRight: '10px' }} disabled={!starSelected}>{currentQuestionIndex === selectedForm.questions.length ? 'Sonucu Gönder' : 'Gönder'}</button>
                                             </div>
                                         </>
                                     )}
@@ -165,7 +177,6 @@ export default function FormShare() {
                             ) : (
                                 <div>Form bulunamadı!</div>
                             )}
-                            <Link to="/formslist" type='button' className="formolusturbtn btn btn-outline-primary btn-sm justify position-absolute bottom-0 start-0">Formlar</Link>
                         </div>
                     </div>
                 </div>
