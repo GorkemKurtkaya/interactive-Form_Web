@@ -7,8 +7,12 @@ export default function Sign() {
     const isLoggedIn = sessionStorage.getItem("token");
     const [token, setToken] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    
 
 
+    
     useEffect(() => {
         if (isLoggedIn) {
             const fetchUserData = async () => {
@@ -26,7 +30,11 @@ export default function Sign() {
                         );
 
                         const data = await response.json();
-
+                        if( data.statusCode === 401 ) {
+                            setToken(false);
+                            navigate('/login');
+                        }
+                        console.log(data)
                         if (data._id) {
                             setToken(true);
                             setUserData(data);
@@ -34,6 +42,7 @@ export default function Sign() {
                             setToken(false);
                         }
                     } catch (error) {
+
                         console.error("Error:", error);
                     }
                 }
@@ -61,7 +70,7 @@ export default function Sign() {
             const data = await response.json();
             if (response.status === 201) {
                 sessionStorage.setItem('token', data.token); // Token'ı sessionStorage'e kaydet
-                navigate('/');
+                navigate('/newformslist');
             } else {
                 console.log(data.message);
                 navigate('/login');
@@ -117,7 +126,8 @@ export default function Sign() {
                                             <div className="center-wrap">
                                                 <div className="section text-center">
                                                     <h4 className="mb-4 pb-3 login-title">Log In</h4>
-                                                    <form action="" method="post" onSubmit={handleSubmit}>
+                                                    {!token? (
+                                                        <form action="" method="post" onSubmit={handleSubmit}>
                                                         <div className="form-group">
                                                             <input required type="email" name="logemail" className="form-style" placeholder="Your Email" id="logemail" autoComplete="off" />
                                                             <i className="input-icon uil uil-at"></i>
@@ -128,6 +138,14 @@ export default function Sign() {
                                                         </div>
                                                         <button type="submit" className="signbtn mt-4">Submit</button>
                                                     </form>
+                                                    ):(<div>
+                                                        <h4>Welcome {userData.name}</h4>
+                                                        <p>Email: {userData.email}</p>
+                                                        <p>Admin ID: {userData._id}</p>
+                                                        <p>Token: {isLoggedIn}</p>
+                                                    </div>)
+                                                }
+                                                    
                                                     <p className="mb-0 mt-4 text-center"><a href="/sign" className="link">Forgot your password?</a></p>
                                                 </div>
                                             </div>

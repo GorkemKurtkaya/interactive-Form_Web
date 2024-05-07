@@ -12,6 +12,7 @@ import { EditFormComponent } from './editFormComponent';
 import { Button, Modal, Space, message } from 'antd';
 import NewFormsAnswers from './Answers/answers';
 import { useNavigate } from 'react-router-dom';
+import TokenCheck from './tokencheck';
 
 
 
@@ -60,6 +61,7 @@ export default function NewFormsList() {
         contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanınca sayfa aşağı iniyor
     };
 
+    
     useEffect(() => {
         const fetchForms = async () => {
             try {
@@ -179,6 +181,8 @@ export default function NewFormsList() {
 
 
     return (
+        <div>
+        <TokenCheck>
         <div className="gorkem-sidebar-container">
             <div className="gorkem-sidebar">
                 <div className="gorkem-logo" style={{ backgroundImage: `url(${"https://avatars.githubusercontent.com/u/27950435?s=200&v=4"})` }}></div>
@@ -400,5 +404,6 @@ export default function NewFormsList() {
                 </div>
             </div>
         </div>
+        </TokenCheck> </div>
     );
 }

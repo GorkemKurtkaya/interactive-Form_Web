@@ -62,26 +62,53 @@ function App() {
       selectedStars:selectedStars
     }; 
   
-    // Update the questionData state with the new data 
+    // yeni verilerle questionData'yı güncelle
     setQuestionData(myQuestionData); 
   
-    // Update the localStorage with the new questionData 
+    //localStorage'ı güncelle
     localStorage.setItem("questiondata", JSON.stringify(myQuestionData)); 
   } 
 
-  // JWT'nin geçerliliğini kontrol eden fonksiyon
-const checkJWTValidity = () => {
-  const token = sessionStorage.getItem('token'); // SessionStorage'den token'ı al
-
-  if (token) {
-      return true; // Token varsa ve geçerliyse true döndür
+// JWT kontrol fonksiyonu
+const checkJWTValidity = async () => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    return false; // Eğer token yoksa geçersiz kabul edelim
   }
 
-  return false; // Token yoksa veya hatalı ise false döndür
+  try {
+    const response = await fetch('http://localhost:3000/auth/get_admin_by_token', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        // Token geçersiz veya süresi dolmuş, giriş yapılmasın
+        sessionStorage.removeItem('token'); // Tokenı sil
+        return false;
+      } else {
+        throw new Error('Sunucudan geçersiz bir yanıt alındı.');
+      }
+    }
+
+    // Sunucudan başarılı yanıt alındı, token geçerli
+    return true;
+  } catch (error) {
+    console.error('JWT kontrol hatası:', error.message);
+    return false;
+  }
 };
 
 useEffect(() => {
-  setIsLoggedIn(checkJWTValidity());
+  const checkLoggedIn = async () => {
+    const isLoggedIn = await checkJWTValidity();
+    setIsLoggedIn(isLoggedIn);
+  };
+
+  checkLoggedIn();
 }, []);
 
 
