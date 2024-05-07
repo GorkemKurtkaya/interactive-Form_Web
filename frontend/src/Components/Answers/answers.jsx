@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal, Space, message } from 'antd';
 import axios from 'axios';
-import { Table } from 'antd';
+import { Table,Icon } from 'antd';
 import classNames from 'classnames';
 
 
@@ -53,6 +53,7 @@ export default function NewFormsAnswers() {
             // Handle error (e.g., show error message to the user)
         }
     };
+    
 
 
     const columns = [
@@ -68,7 +69,7 @@ export default function NewFormsAnswers() {
             key: `answers${index}`,
             render: (answers) => {
                 const stars = answers && answers[index + 1]?.stars; // Check if answers array exists before accessing its elements
-                return stars !== undefined ? stars : '-'; // Render stars if defined, otherwise '-'
+                return stars !== undefined ? stars : '0'; // Render stars if defined, otherwise '-'
             },
         })),
         {
@@ -85,6 +86,23 @@ export default function NewFormsAnswers() {
     
                 return average ? average.toFixed(2) : '-';
             },
+        },
+    ];
+
+    const usersTableColumns = [
+        {
+            title: 'User Name',
+            dataIndex: 'name',
+            key: 'userName',
+        },
+        {
+            title: 'Answer Count',
+            dataIndex: 'answers',
+            key: 'answerCount',
+            render: (answers) => {
+                return Array.isArray(answers) ? answers.length : 0;
+            }
+
         },
     ];
 
@@ -155,6 +173,12 @@ export default function NewFormsAnswers() {
                                 <div className="col-md-12 tablo-yazi" ref={contentRef}>
                                     <Table
                                         columns={columns}
+                                        dataSource={selectedForm.users || []}
+                                        loading={loading}
+                                        scroll={{ x: 'max-content' }}
+                                    />
+                                    <Table
+                                        columns={usersTableColumns}
                                         dataSource={selectedForm.users || []}
                                         loading={loading}
                                         scroll={{ x: 'max-content' }}
