@@ -2,16 +2,12 @@ import './App.css';
 import React, { useEffect, useState } from 'react'; 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; 
 import BasicInfo from './Components/BasicInfo'; 
-import AdditionalQuestions from './Components/AdditionalQuestions';
-import EnteredDetails from './Components/EnteredDetails'; 
 import ThankYouPage from './Components/ThankYouPage'; 
-import { About } from './Components/About'; 
 import  Sign  from './Components/login-signup';
 import  Formcreate  from './Components/formcreate';
 import FormsList from './Components/getforms';
 import FormShare from './Components/formshare';
 import Navbar from './Components/navbar';
-import Sidebar from './Components/sidebar/sidebar';
 import NewFormsList from './Components/newgetforms';
 import {Spinner} from './Components/spinner';
   
@@ -128,10 +124,6 @@ useEffect(() => {
           />
           <Route path='/noWhere' element={<Spinner />} />
           <Route path='/sign' element={<Sign />} />
-          <Route 
-            path='/questions'
-            element={<AdditionalQuestions addQuestionData={addQuestionData} />} 
-          />
 
           <Route 
             path='/forms/formshare/:formId'
@@ -152,30 +144,15 @@ useEffect(() => {
           {/* Render the BasicInfo component with the addBasicData function */} 
           <Route path='/' element={<BasicInfo addBasicData={addBasicData} />} /> 
     
-          {/* Render the AdditionalQuestions component with the addQuestionData function */} 
-          <Route 
-            path='/questions'
-            element={<AdditionalQuestions addQuestionData={addQuestionData} />} 
-          /> 
-    
-          {/* Render the EnteredDetails component with basicData and questionData */} 
-          <Route 
-            path='/details'
-            element={<EnteredDetails data={basicData} questiondData={questionData} />} 
-          /> 
+
+          
     
           {/* Render the ThankYouPage component */} 
           <Route 
             path='/thanks'
             element={<ThankYouPage />} 
           /> 
-    
-          {/* Render the About component */} 
-          <Route 
-            path='/about'
-            element={<About />} 
-          /> 
-  
+     
             
           <Route 
             path='/formcreate'
@@ -192,10 +169,7 @@ useEffect(() => {
             element={<Navbar />} 
           />
 
-          <Route 
-            path='/sidebar'
-            element={<Sidebar />} 
-          />
+
           <Route 
             path='/newformslist'
             element={<NewFormsList />} 
