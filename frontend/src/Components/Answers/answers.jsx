@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, Modal, Space, message } from 'antd';
 import axios from 'axios';
-import { Table,Icon } from 'antd';
+import { Table, Icon } from 'antd';
 import classNames from 'classnames';
 
 
@@ -53,7 +53,7 @@ export default function NewFormsAnswers() {
             // Handle error (e.g., show error message to the user)
         }
     };
-    
+
 
 
     const columns = [
@@ -80,31 +80,47 @@ export default function NewFormsAnswers() {
                 if (!Array.isArray(answers) || answers.length === 0) {
                     return '-';
                 }
-    
+
                 const totalStars = answers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
                 const average = totalStars / answers.length;
-    
+
                 return average ? average.toFixed(2) : '-';
             },
         },
+
     ];
 
     const usersTableColumns = [
         {
-            title: 'User Name',
-            dataIndex: 'name',
-            key: 'userName',
+            title: 'Ortalamalar',
+            dataIndex: 'average',
+            key: 'average',
         },
-        {
-            title: 'Answer Count',
+        ...(selectedForm?.questions || []).map((question, index) => ({
+            title: `Soru ${index + 1}`,
             dataIndex: 'answers',
-            key: 'answerCount',
+            key: `answers${index}`,
             render: (answers) => {
-                return Array.isArray(answers) ? answers.length : 0;
-            }
+                if (!Array.isArray(answers) || answers.length === 0) {
+                    return null;
+                }
+    
+                const filteredAnswers = answers.filter(answer => answer.stars !== undefined && answer.questionId === question._id);
+                console.log('filteredAnswers:', filteredAnswers);
+                if (filteredAnswers.length === 0) {
+                    return null;
+                }
+    
+                const totalStars = filteredAnswers.reduce((acc, answer) => acc + answer.stars, 0); // stars özelliğini doğrudan ekliyoruz
 
-        },
+                const average = totalStars / filteredAnswers.length;
+    
+                return average ? average.toFixed(2) : null;
+            },
+        })),
     ];
+
+
 
     return (
         <div className="col-md-12">
