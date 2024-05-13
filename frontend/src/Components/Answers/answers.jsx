@@ -11,6 +11,8 @@ export default function NewFormsAnswers() {
     const [loading, setLoading] = useState(false);
     const contentRef = useRef(null);
 
+
+
     useEffect(() => {
         const fetchForms = async () => {
             try {
@@ -24,6 +26,21 @@ export default function NewFormsAnswers() {
         fetchForms();
     }, []);
 
+    const handleDeleteUser = async (userId) => {
+        try {
+          await axios.delete(`http://localhost:3000/forms/${selectedForm._id}/users/${userId}`);
+          setSelectedForm((prevState) => ({
+            ...prevState,
+            users: prevState.users.filter((user) => user._id !== userId),
+          }));
+        } catch (error) {
+          console.error('Error deleting user:', error);
+          // Handle error (e.g., show error message to the user)
+        }
+      };
+
+
+
     const handleFormSelect = async (formId) => {
         try {
             setLoading(true);
@@ -31,44 +48,57 @@ export default function NewFormsAnswers() {
             setSelectedForm(response.data);
             setLoading(false);
             contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+    
             // Fetch users for the selected form
             const usersResponse = await axios.get(`http://localhost:3000/forms/${formId}/users`);
             const usersWithNames = usersResponse.data.map(user => ({
                 ...user,
                 userName: user.name // Assuming user name is stored in 'name' field
             }));
-
-            // Fetch questions and answers for the selected form
-
-
+    
+            const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
+            const questions = questionsResponse.data;
+            console.log(questions);
+    
+            const answersAverage = questions.map(question => {
+                const totalStars = question.answers.reduce((acc, answer) => acc + (answer.stars || 0), 0); // yıldızları toplar
+                return totalStars / (question.answers.length || 1); // yıldız sayısını soru sayısına böler
+            });
+            console.log(answersAverage);
+    
             setSelectedForm(prevState => ({
                 ...prevState,
                 users: usersWithNames,
                 questions: response.data.questions
             }));
-            
-            const totalStars = response.data.users.map(user => {
-                const answers = user.answers || [];
-                const totalStars = answers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
-                return totalStars;
-            });
-            setSelectedForm((prev) => ({
+    
+            const totalObject = {
+                name: "Toplam Ortalama",
+                answers: [
+                  {
+                    questionId: questions[0]?._id,
+                    stars: parseFloat((questions[0].answers.reduce((acc, answer) => acc + (answer.stars || 0), 0) / (questions[0].answers.length || 1)).toFixed(2))
+                  },
+                  ...answersAverage.map((average, index) => ({
+                    questionId: questions[index + 1]?._id,
+                    stars: parseFloat(average.toFixed(2))
+                  }))
+                ],
+              };
+            setSelectedForm(prev => ({
                 ...prev,
-                users: [...prev.users, totalStars],
+                users: [...prev.users, totalObject],
             }));
-
-
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
             // Handle error (e.g., show error message to the user)
         }
     };
+    
+    
 
-useEffect(() => {
-    console.log('selectedForm:', selectedForm);
-}, [selectedForm]);
+
 
     const columns = [
         {
@@ -101,39 +131,19 @@ useEffect(() => {
                 return average ? average.toFixed(2) : '-';
             },
         },
-
-    ];
-
-    const usersTableColumns = [
         {
-            title: 'Ortalamalar',
-            dataIndex: 'average',
-            key: 'average',
-        },
-        ...(selectedForm?.questions || []).map((question, index) => ({
-            title: `Soru ${index + 1}`,
-            dataIndex: 'answers',
-            key: `answers${index}`,
-            render: (answers) => {
-                console.log('answers:', answers);
-                if (!Array.isArray(answers) || answers.length === 0) {
-                    return null;
-                }
-    
-                const filteredAnswers = answers.filter(answer => answer.stars !== undefined && answer.questionId === question._id);
-                console.log('filteredAnswers:', filteredAnswers);
-                if (filteredAnswers.length === 0) {
-                    return null;
-                }
-    
-                const totalStars = filteredAnswers.reduce((acc, answer) => acc + answer.stars, 0); // stars özelliğini doğrudan ekliyoruz
+            title: 'Delete',
+            dataIndex: 'delete',
+            key: 'delete',
+            render: (_, record) => (
+              <Button type="link" onClick={() => handleDeleteUser(record._id)}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75ZM4.496 6.675l.66 6.6a.25.25 0 0 0 .249.225h5.19a.25.25 0 0 0 .249-.225l.66-6.6a.75.75 0 0 1 1.492.149l-.66 6.6A1.748 1.748 0 0 1 10.595 15h-5.19a1.75 1.75 0 0 1-1.741-1.575l-.66-6.6a.75.75 0 1 1 1.492-.15ZM6.5 1.75V3h3V1.75a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25Z"></path></svg>
+              </Button>
+            ),
+          },
 
-                const average = totalStars / filteredAnswers.length;
-    
-                return average ? average.toFixed(2) : null;
-            },
-        })),
     ];
+
 
 
 
@@ -204,12 +214,6 @@ useEffect(() => {
                                 <div className="col-md-12 tablo-yazi" ref={contentRef}>
                                     <Table
                                         columns={columns}
-                                        dataSource={selectedForm.users || []}
-                                        loading={loading}
-                                        scroll={{ x: 'max-content' }}
-                                    />
-                                    <Table
-                                        columns={usersTableColumns}
                                         dataSource={selectedForm.users || []}
                                         loading={loading}
                                         scroll={{ x: 'max-content' }}

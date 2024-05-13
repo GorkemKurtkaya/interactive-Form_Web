@@ -38,6 +38,9 @@ let FormController = class FormController {
     async getQuestions(formId) {
         return this.formService.getQuestions(formId);
     }
+    async getQuestionDetails(formId, questionId) {
+        return this.formService.getQuestionDetails(formId, questionId);
+    }
     async getOptions(formId) {
         return this.formService.getOptions(formId);
     }
@@ -61,6 +64,9 @@ let FormController = class FormController {
     }
     async getUsers(formId) {
         return this.formService.getUsers(formId);
+    }
+    async deleteUser(formId, userId) {
+        return this.formService.deleteUser(formId, userId);
     }
 };
 exports.FormController = FormController;
@@ -99,6 +105,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "getQuestions", null);
+__decorate([
+    (0, common_1.Get)(':formId/questions/:questionId'),
+    __param(0, (0, common_1.Param)('formId')),
+    __param(1, (0, common_1.Param)('questionId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], FormController.prototype, "getQuestionDetails", null);
 __decorate([
     (0, common_1.Get)(':formId/options'),
     __param(0, (0, common_1.Param)('formId')),
@@ -153,6 +167,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "getUsers", null);
+__decorate([
+    (0, common_1.Delete)(':formId/users/:userId'),
+    __param(0, (0, common_1.Param)('formId')),
+    __param(1, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], FormController.prototype, "deleteUser", null);
 exports.FormController = FormController = __decorate([
     (0, common_1.Controller)('forms'),
     __metadata("design:paramtypes", [form_service_1.FormService])

@@ -12,6 +12,7 @@ export declare class FormController {
     getFormDetails(formId: string): Promise<Form>;
     getAllForms(): Promise<Form[]>;
     getQuestions(formId: string): Promise<Question[]>;
+    getQuestionDetails(formId: string, questionId: string): Promise<Question>;
     getOptions(formId: string): Promise<Option[]>;
     saveAnswer(formId: string, questionId: string, body: any): Promise<Question>;
     deleteForm(formId: number): Promise<Form>;
@@ -21,4 +22,5 @@ export declare class FormController {
         name: string;
     }): Promise<User>;
     getUsers(formId: string): Promise<User[]>;
+    deleteUser(formId: string, userId: string): Promise<User>;
 }

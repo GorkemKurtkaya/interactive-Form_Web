@@ -47,4 +47,6 @@ export declare class FormService {
     createUserAndAddToForm(name: string, formId: string): Promise<User>;
     deleteQuestion(formId: string, questionId: string): Promise<Question>;
     getUsers(formId: string): Promise<User[]>;
+    getQuestionDetails(formId: string, questionId: string): Promise<Question>;
+    deleteUser(formId: string, userId: string): Promise<User>;
 }

@@ -1,6 +1,6 @@
 // src/form/form.controller.ts
 
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Delete } from '@nestjs/common';
 import { FormService } from './form.service';
 import { Form } from './schemas/form.schema';
 import { Question } from './schemas/question.schema';
@@ -43,6 +43,14 @@ export class FormController {
   @Get(':formId/questions')
   async getQuestions(@Param('formId') formId: string): Promise<Question[]> {
     return this.formService.getQuestions(formId);
+  }
+
+  @Get(':formId/questions/:questionId')
+  async getQuestionDetails(
+    @Param('formId') formId: string,
+    @Param('questionId') questionId: string,
+  ): Promise<Question> {
+    return this.formService.getQuestionDetails(formId, questionId);
   }
 
   @Get(':formId/options')
@@ -90,6 +98,13 @@ async getUsers(@Param('formId') formId: string): Promise<User[]> {
   return this.formService.getUsers(formId);
 
 }
+
+@Delete(':formId/users/:userId')
+async deleteUser(@Param('formId') formId: string, @Param('userId') userId: string): Promise<User> {
+  return this.formService.deleteUser(formId, userId);
+
+}
+
 }
 
 

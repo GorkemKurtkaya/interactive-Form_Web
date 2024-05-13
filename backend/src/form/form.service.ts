@@ -201,6 +201,20 @@ async getUsers(formId: string): Promise<User[]> {
   return users;
 }
 
+async getQuestionDetails(formId: string, questionId: string): Promise<Question> {
+  return this.questionModel.findById
+  (questionId).exec();
+}
+
+async deleteUser(formId: string, userId: string): Promise<User> {
+  const user = await this.userModel.findByIdAndDelete(userId).exec();
+  if (!user) {
+      throw new Error('User not found');
+  }
+  return user;
+}
+
+
 
 
   // Diğer işlemler buraya eklenebilir

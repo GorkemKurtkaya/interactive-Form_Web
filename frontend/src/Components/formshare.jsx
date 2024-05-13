@@ -140,9 +140,7 @@ export default function FormShare() {
                                 <div>Loading...</div>
                             ) : form ? (
                                 <div>
-                                    <div style={{}}>
-                                        <h2>{form.name}</h2>
-                                    </div>
+                                    <br />
                                     {currentQuestionIndex === 0 && (
                                         <BasicInfo
                                             formId={formId}
@@ -157,9 +155,9 @@ export default function FormShare() {
                                             <div className="row justify-content-center">
                                                 {selectedForm.questions && (
                                                     <div className="col-md-8 mb-3">
-                                                        <div className="card">
+                                                        <div className="questioncard">
                                                             <div className="card-body">
-                                                                <p>{selectedForm.questions[currentQuestionIndex - 1].description}</p>
+                                                                <p className='buyuk-yazi'>{selectedForm.questions[currentQuestionIndex - 1].description}</p>
                                                                 <br />
                                                                 <StarRateApp onStarSelect={(stars) => onStarSelect(selectedForm.questions[currentQuestionIndex - 1]._id, stars)} value={selectedStars} />
                                                             </div>

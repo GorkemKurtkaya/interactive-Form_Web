@@ -83,6 +83,24 @@ body {
   display: flex;
   flex-direction: column;
 }
+.questioncard{
+  background-color: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: .25rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 325px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: large;
+}
+.buyuk-yazi{
+  font-size: 1.2rem;
+}
+
 
 .pluscard {
   background-color: #f8f9fa;
