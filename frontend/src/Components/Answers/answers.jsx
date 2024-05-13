@@ -47,6 +47,18 @@ export default function NewFormsAnswers() {
                 users: usersWithNames,
                 questions: response.data.questions
             }));
+            
+            const totalStars = response.data.users.map(user => {
+                const answers = user.answers || [];
+                const totalStars = answers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
+                return totalStars;
+            });
+            setSelectedForm((prev) => ({
+                ...prev,
+                users: [...prev.users, totalStars],
+            }));
+
+
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
@@ -54,7 +66,9 @@ export default function NewFormsAnswers() {
         }
     };
 
-
+useEffect(() => {
+    console.log('selectedForm:', selectedForm);
+}, [selectedForm]);
 
     const columns = [
         {
@@ -101,6 +115,7 @@ export default function NewFormsAnswers() {
             dataIndex: 'answers',
             key: `answers${index}`,
             render: (answers) => {
+                console.log('answers:', answers);
                 if (!Array.isArray(answers) || answers.length === 0) {
                     return null;
                 }
