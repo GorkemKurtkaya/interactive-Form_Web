@@ -47,6 +47,8 @@ export default function NewFormsAnswers() {
                 users: usersWithNames,
                 questions: response.data.questions
             }));
+
+            
         } catch (error) {
             console.error('Error fetching form details:', error);
             setLoading(false);
