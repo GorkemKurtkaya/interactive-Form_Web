@@ -20,6 +20,7 @@ export default function FormShare() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [userId, setUserId] = useState(null); // Kullanıcı ID'sini tutmak için state eklendi
     const [starSelected, setStarSelected] = useState(false);
+    const [selectedYesNo, setSelectedYesNo] = useState({});
 
 
 
@@ -28,9 +29,9 @@ export default function FormShare() {
             const newStars = [...prevStars];
             newStars[index] = stars;
             return newStars;
-    });
-    setStarSelected(true); // Set to true when stars are selected
-};
+        });
+        setStarSelected(true); // Set to true when stars are selected
+    };
 
     const handleSetUserId = (id) => {
         setUserId(id);
@@ -86,34 +87,65 @@ export default function FormShare() {
         try {
             setLoading(true);
             const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
-                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,    
+                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,
                 stars: selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id],
                 userId: userId // Kullanıcı ID'sini gönder
             });
             console.log(response.data);
             setLoading(false);
             handleNextQuestion();
-    
+
             if (currentQuestionIndex === selectedForm.questions.length) {
                 navigate("/thanks");
             }
-    
+
         } catch (error) {
             console.error('Error submitting response:', error);
             setLoading(false);
         }
     };
-    
-    // Kullanıcı yıldızları seçmeden sonraki soruya geçemez
+
     const handleNextQuestion = () => {
-        if (selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id] !== undefined) {
-            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-            setStarSelected(false); 
-        } else {
-            // Kullanıcı yıldızları seçmeden devam edemez uyarısı verebilirsiniz
-            alert("Lütfen yıldızları seçerek devam edin.");
+        const currentQuestion = selectedForm.questions[currentQuestionIndex - 1];
+        const currentQuestionId = currentQuestion._id;
+    
+        if (currentQuestion.questionType === 'stars') {
+            if (selectedStars[currentQuestionId] !== undefined) {
+                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+                setStarSelected(false);
+            } else {
+                alert("Lütfen yıldızları seçerek devam edin.");
+            }
+        } else if (currentQuestion.questionType === 'yesNo') {
+            if (selectedYesNo[currentQuestionId] !== undefined) {
+                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            } else {
+                alert("Lütfen 'Yes' veya 'No' seçerek devam edin.");
+            }
         }
     };
+
+    const handleYesNoAnswer = async (questionId, answer) => {
+        try {
+            setLoading(true);
+            const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
+                questionId: questionId,
+                answer: answer,
+                userId: userId // Kullanıcı ID'sini gönder
+            });
+            console.log(response.data);
+            setSelectedYesNo(prevState => ({
+                ...prevState,
+                [questionId]: answer
+            }));
+            setLoading(false);
+            handleNextQuestion(); // Sıradaki soruya geçiş yap
+        } catch (error) {
+            console.error('Error submitting response:', error);
+            setLoading(false);
+        }
+    }
+    
 
 
     return (
@@ -131,11 +163,11 @@ export default function FormShare() {
                                 <Step key={0} title="Başla" />
                                 {selectedForm && selectedForm.questions.map((question, index) => (
                                     <Step key={index + 1} title={
-                                        selectedForm.questions.length>10 ? ` ${index + 1}` :
-                                        `Soru ${index + 1}`} />
+                                        selectedForm.questions.length > 10 ? ` ${index + 1}` :
+                                            `Soru ${index + 1}`} />
                                 ))}
                             </Steps>
-
+    
                             {loading ? (
                                 <div>Loading...</div>
                             ) : form ? (
@@ -148,7 +180,7 @@ export default function FormShare() {
                                             onNext={() => setCurrentQuestionIndex(1)} // Sıradaki adıma geçiş
                                         />
                                     )}
-
+    
                                     {currentQuestionIndex > 0 && (
                                         <>
                                             {/* <h3 className='custom-form' style={{ textAlign: 'center' }}>Soru {currentQuestionIndex} / {selectedForm.questions.length}</h3> */}
@@ -159,7 +191,16 @@ export default function FormShare() {
                                                             <div className="card-body">
                                                                 <p className='buyuk-yazi'>{selectedForm.questions[currentQuestionIndex - 1].description}</p>
                                                                 <br />
-                                                                <StarRateApp onStarSelect={(stars) => onStarSelect(selectedForm.questions[currentQuestionIndex - 1]._id, stars)} value={selectedStars} />
+                                                                {selectedForm.questions[currentQuestionIndex - 1].questionType === 'stars' ? (
+                                                                    <StarRateApp onStarSelect={(stars) => onStarSelect(selectedForm.questions[currentQuestionIndex - 1]._id, stars)} value={selectedStars} />
+                                                                ) : selectedForm.questions[currentQuestionIndex - 1].questionType === 'yesNo' ? (
+                                                                    <div>
+                                                                        <button className='btn btn-success' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}>Yes</button>
+                                                                        <button className='btn btn-danger' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}>No</button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div>Question type not supported</div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -181,6 +222,7 @@ export default function FormShare() {
             </div>
         </div>
     );
+    
 
 
 

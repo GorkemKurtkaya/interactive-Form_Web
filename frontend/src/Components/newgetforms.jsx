@@ -146,6 +146,28 @@ export default function NewFormsList() {
             setLoading(false);
         }
     }
+    const handleAddYesNoQuestion= async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post(`http://localhost:3000/forms/${selectedForm._id}/questions`, {
+                title: questionTitle,
+                description: questionDescription,
+                options: options.map(option => ({ value: option })),
+                questionType: 'yesNo',
+            });
+            setSelectedForm(response.data.form);
+            setQuestionTitle("");
+            setQuestionDescription("");
+            setOptions([]);
+            setLoading(false);
+            handleFormSelect(selectedForm._id);
+            contentRef.current.scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error adding question:', error);
+            setLoading(false);
+        }
+    };
+
 
     const handleAddQuestion = async () => {
         try {
@@ -153,13 +175,13 @@ export default function NewFormsList() {
             const response = await axios.post(`http://localhost:3000/forms/${selectedForm._id}/questions`, {
                 title: questionTitle,
                 description: questionDescription,
-                options: options.map(option => ({ value: option })),
-                stars: selectedStars, // Add stars field
+                questionType: 'stars',
+                stars: selectedStars,
             });
             setSelectedForm(response.data.form);
             setQuestionTitle("");
             setQuestionDescription("");
-            setOptions([]);
+            setSelectedStars([]);
             setLoading(false);
             handleFormSelect(selectedForm._id);
             contentRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -272,7 +294,7 @@ export default function NewFormsList() {
                                                                         >
                                                                             <i className="bi bi-share"></i>
                                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M15 3a3 3 0 0 1-5.175 2.066l-3.92 2.179a2.994 2.994 0 0 1 0 1.51l3.92 2.179a3 3 0 1 1-.73 1.31l-3.92-2.178a3 3 0 1 1 0-4.133l3.92-2.178A3 3 0 1 1 15 3Zm-1.5 10a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 13Zm-9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 4.5 8Zm9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 3Z"></path></svg>
-                                                                            <span className="visually-hidden">Button</span>
+                                                                            <span className="visually-hidden"></span>
                                                                         </Button>
                                                                     </Space>
                                                                     <Button onClick={(event) => { event.stopPropagation(); setSelectedEditForm(form._id) }} type='default'>
@@ -329,12 +351,20 @@ export default function NewFormsList() {
                                                                         <div className="card-body leftborder">
                                                                             <div className='card-header formsoru'>{question.description}</div>
                                                                             <br />
-                                                                            {/* Star rating component */}
-                                                                            <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
+                                                                            {question.questionType === 'stars' ? (
+                                                                                <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
+                                                                            ) : (
+                                                                                <div>
+                                                                                    <button className='btn btn-success'>Yes</button>
+                                                                                    <button className='btn btn-danger'>No</button>
+                                                                                </div>
+                                                                            )}
                                                                             <br />
                                                                             <button onClick={() => handleDeleteQuestion(selectedForm.formId, question._id)} type='button' className='btn btn-outline-secondary'>
                                                                                 <i className="bi bi-trash"></i>
-                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" /></svg>
+                                                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                                                                                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                                                                </svg>
                                                                             </button>
                                                                         </div>
                                                                     </div>
@@ -353,7 +383,7 @@ export default function NewFormsList() {
                                                             onKeyDown={(e) => {
                                                                 if (e.key === 'Enter') {
                                                                     e.preventDefault();
-                                                                    handleAddQuestion();
+                                                                    questionType === 'stars' ? handleAddQuestion() : handleAddYesNoQuestion();
                                                                 }
                                                             }}
                                                         />
@@ -366,7 +396,7 @@ export default function NewFormsList() {
                                                             <option value="yesNo">Yes/No</option>
                                                         </select>
 
-                                                        <Button onClick={handleAddQuestion} type='submit' className="btn btn-success" disabled={loading}>
+                                                        <Button onClick={questionType === 'stars' ? handleAddQuestion : handleAddYesNoQuestion} type='submit' className="denemebutton" disabled={loading}>
                                                             {loading ? "Ekleniyor..." : "Soruyu Ekle"}
                                                         </Button>
                                                     </div>

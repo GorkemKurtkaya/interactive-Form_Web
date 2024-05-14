@@ -5,10 +5,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Form, FormDocument } from './schemas/form.schema';
 import { Question, QuestionDocument } from './schemas/question.schema';
-import { Option, OptionSchema,OptionDocument } from './schemas/option.schema';
+import { Option, OptionSchema, OptionDocument } from './schemas/option.schema';
 import mongoose from 'mongoose';
 import { Types } from 'mongoose';
 import { User } from './schemas/user';
+import { NotFoundException } from '@nestjs/common';
 
 
 @Injectable()
@@ -17,56 +18,66 @@ export class FormService {
     @InjectModel(Form.name) private formModel: Model<FormDocument>,
     @InjectModel(Question.name) private questionModel: Model<QuestionDocument>,
     @InjectModel(Option.name) private optionModel: Model<OptionDocument>,
-    @InjectModel(User.name) private readonly userModel: Model<User>, 
-  ) {}
-  
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) { }
+
 
   async createForm(name: string, description: string): Promise<Form> {
     const lastForm = await this.formModel.findOne().sort({ formId: -1 }); // En son eklenen formu bul
     let newFormId = 1; // Yeni formun ID'si, varsayılan olarak 1
     if (lastForm) {
-        newFormId = lastForm.formId + 1; // Son formun ID'sine 1 ekleyerek yeni ID oluştur
+      newFormId = lastForm.formId + 1; // Son formun ID'sine 1 ekleyerek yeni ID oluştur
     }
     const newForm = new this.formModel({ name, description, formId: newFormId, questions: [] });
     return newForm.save();
-}
+  }
 
-async deleteForm(formId: number): Promise<Form> {
+  async deleteForm(formId: number): Promise<Form> {
     const form = await this.formModel.findOneAndDelete({ formId }).exec();
     if (!form) {
-        throw new Error('Form not found');
+      throw new Error('Form not found');
     }
     return form;
-}
-
-async editForm(formId: number, name: string, description: string): Promise<Form> {
-  const form = await this.formModel.findByIdAndUpdate(formId, { name, description }, { new: true }).exec();
-  if (!form) {
-      throw new Error('Form not found');
-  }
-  return form;
-}
-
-async addQuestion(formId: string, title: string, description: string): Promise<Form> {
-  const form = await this.formModel.findById(formId);
-  if (!form) {
-      throw new Error('Form not found');
   }
 
-  // Yeni soru için questionId değerini hesapla ve arttır
-  const questionId = form.questions.length + 1;
+  async editForm(formId: number, name: string, description: string): Promise<Form> {
+    const form = await this.formModel.findByIdAndUpdate(formId, { name, description }, { new: true }).exec();
+    if (!form) {
+      throw new Error('Form not found');
+    }
+    return form;
+  }
 
-  // const newOptions = options.map(option => ({ value: option }));
-  const newQuestion = new this.questionModel({ title, description, questionId, formId: form._id });
-  
-  await newQuestion.save();
-  form.questions.push(newQuestion._id);
-  await form.save();
-  return form;
-}
+  async addQuestion(
+    formId: string,
+    title: string,
+    description: string,
+    questionType: string
+  ): Promise<Form> {
+    const form = await this.formModel.findById(formId);
+    if (!form) {
+      throw new NotFoundException('Form not found');
+    }
+
+    // Yeni soru için questionId değerini hesapla ve arttır
+    const questionId = form.questions.length + 1;
+
+    const newQuestion = new this.questionModel({
+      title,
+      description,
+      questionId,
+      questionType,
+      formId: form._id,
+    });
+
+    await newQuestion.save();
+    form.questions.push(newQuestion._id);
+    await form.save();
+    return form;
+  }
 
 
-async getAllForms(): Promise<Form[]> {
+  async getAllForms(): Promise<Form[]> {
     return this.formModel.find().exec();
   }
 
@@ -115,17 +126,17 @@ async getAllForms(): Promise<Form[]> {
     const validFormId = mongoose.Types.ObjectId.isValid(formId);
     const validQuestionId = mongoose.Types.ObjectId.isValid(questionId);
     const validUserId = mongoose.Types.ObjectId.isValid(userId);
-  
+
     if (!validFormId || !validQuestionId || !validUserId) {
       throw new Error('Invalid IDs');
     }
-  
+
     // Question belgesini bulma ve işlemlerin devamı
     const question = await this.questionModel.findById(questionId);
     if (!question) {
       throw new Error('Question not found');
     }
-  
+
     // Kullanıcının cevabını bulma veya yeni cevap ekleme
     let userAnswerIndex = -1;
     for (let i = 0; i < question.answers.length; i++) {
@@ -134,7 +145,7 @@ async getAllForms(): Promise<Form[]> {
         break;
       }
     }
-  
+
     if (userAnswerIndex !== -1) {
       // Kullanıcıya ait cevap zaten varsa güncelle
       question.answers[userAnswerIndex].stars = stars;
@@ -142,20 +153,20 @@ async getAllForms(): Promise<Form[]> {
       // Kullanıcıya ait cevap yoksa ekle
       question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars });
     }
-  
+
     // Soruyu kaydet
     await question.save();
-    
+
     // Kullanıcı belgesini bulma ve cevapları ekleyin
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-    
+
     // Kullanıcıya ait cevapları ekle
     user.answers.push({ questionId: new mongoose.Types.ObjectId(questionId), userId: new mongoose.Types.ObjectId(userId), stars });
     await user.save();
-    
+
     return question;
   }
 
@@ -165,7 +176,7 @@ async getAllForms(): Promise<Form[]> {
     const lastUser = await this.userModel.findOne().sort({ userId: -1 }); // En son eklenen kullanıcıyı bul
     let newUserId = 1; // Yeni kullanıcının ID'si, varsayılan olarak 1
     if (lastUser) {
-        newUserId = lastUser.userId + 1; // Son kullanıcının ID'sine 1 ekleyerek yeni ID oluştur
+      newUserId = lastUser.userId + 1; // Son kullanıcının ID'sine 1 ekleyerek yeni ID oluştur
     }
     const newUser = new this.userModel({ name, userId: newUserId, answers: {} });
     await newUser.save();
@@ -173,46 +184,46 @@ async getAllForms(): Promise<Form[]> {
     // Kullanıcıyı forma ekleme
     const form = await this.formModel.findById(formId);
     if (!form) {
-        throw new Error('Form not found');
+      throw new Error('Form not found');
     }
     // Convert userId to string and add it to the form's users list
     form.users.push(newUser._id.toString()); // Yeni kullanıcının _id'sini string olarak ekliyoruz
     await form.save();
 
     return newUser;
-}
+  }
 
 
 
-async deleteQuestion(formId: string, questionId: string): Promise<Question> {
-  const question = await this.questionModel.findByIdAndDelete(questionId).exec();
-  if (!question) {
+  async deleteQuestion(formId: string, questionId: string): Promise<Question> {
+    const question = await this.questionModel.findByIdAndDelete(questionId).exec();
+    if (!question) {
       throw new Error('Question not found');
+    }
+    return question;
   }
-  return question;
-}
 
-async getUsers(formId: string): Promise<User[]> {
-  const form = await this.formModel.findById(formId).exec();
-  if (!form) {
-    throw new Error('Form not found');
+  async getUsers(formId: string): Promise<User[]> {
+    const form = await this.formModel.findById(formId).exec();
+    if (!form) {
+      throw new Error('Form not found');
+    }
+    const users = await this.userModel.find({ _id: { $in: form.users } }).exec();
+    return users;
   }
-  const users = await this.userModel.find({ _id: { $in: form.users } }).exec();
-  return users;
-}
 
-async getQuestionDetails(formId: string, questionId: string): Promise<Question> {
-  return this.questionModel.findById
-  (questionId).exec();
-}
+  async getQuestionDetails(formId: string, questionId: string): Promise<Question> {
+    return this.questionModel.findById
+      (questionId).exec();
+  }
 
-async deleteUser(formId: string, userId: string): Promise<User> {
-  const user = await this.userModel.findByIdAndDelete(userId).exec();
-  if (!user) {
+  async deleteUser(formId: string, userId: string): Promise<User> {
+    const user = await this.userModel.findByIdAndDelete(userId).exec();
+    if (!user) {
       throw new Error('User not found');
+    }
+    return user;
   }
-  return user;
-}
 
 
 

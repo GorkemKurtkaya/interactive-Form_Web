@@ -21,6 +21,7 @@ const question_schema_1 = require("./schemas/question.schema");
 const option_schema_1 = require("./schemas/option.schema");
 const mongoose_3 = require("mongoose");
 const user_1 = require("./schemas/user");
+const common_2 = require("@nestjs/common");
 let FormService = class FormService {
     constructor(formModel, questionModel, optionModel, userModel) {
         this.formModel = formModel;
@@ -51,13 +52,19 @@ let FormService = class FormService {
         }
         return form;
     }
-    async addQuestion(formId, title, description) {
+    async addQuestion(formId, title, description, questionType) {
         const form = await this.formModel.findById(formId);
         if (!form) {
-            throw new Error('Form not found');
+            throw new common_2.NotFoundException('Form not found');
         }
         const questionId = form.questions.length + 1;
-        const newQuestion = new this.questionModel({ title, description, questionId, formId: form._id });
+        const newQuestion = new this.questionModel({
+            title,
+            description,
+            questionId,
+            questionType,
+            formId: form._id,
+        });
         await newQuestion.save();
         form.questions.push(newQuestion._id);
         await form.save();
