@@ -20,6 +20,9 @@ export class Question {
 
   @Prop({ type: Number, default: 1 })
   questionId: number;
+
+  @Prop()
+  questionType: string;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(Question);

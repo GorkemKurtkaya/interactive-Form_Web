@@ -34,6 +34,7 @@ export declare class Question {
         stars: number;
     }[];
     questionId: number;
+    questionType: string;
 }
 export declare const QuestionSchema: mongoose.Schema<Question, mongoose.Model<Question, any, any, any, Document<unknown, any, Question> & Question & {
     _id: mongoose.Types.ObjectId;

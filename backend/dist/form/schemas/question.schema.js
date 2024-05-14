@@ -35,6 +35,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: Number, default: 1 }),
     __metadata("design:type", Number)
 ], Question.prototype, "questionId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Question.prototype, "questionType", void 0);
 exports.Question = Question = __decorate([
     (0, mongoose_1.Schema)()
 ], Question);

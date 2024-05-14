@@ -32,7 +32,10 @@ export default function NewFormsList() {
     const [selectedEditForm, setSelectedEditForm] = useState(null);
     const contentRef = useRef(null);
     const [open, setOpen] = useState(false);
-    
+    const [questionType, setQuestionType] = useState('stars'); // Default to 'stars'
+
+
+
     const navigate = useNavigate();
 
     //    Modal kısmı
@@ -60,7 +63,7 @@ export default function NewFormsList() {
         contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanınca sayfa aşağı iniyor
     };
 
-    
+
     useEffect(() => {
         const fetchForms = async () => {
             try {
@@ -233,7 +236,7 @@ export default function NewFormsList() {
                                                                 <div className='mybtn-group'>
                                                                     <Space>
                                                                         <Button
-                                                                            type="default" 
+                                                                            type="default"
                                                                             onClick={(event) => {
                                                                                 event.stopPropagation();
                                                                                 Modal.confirm({
@@ -300,8 +303,8 @@ export default function NewFormsList() {
                                                             <h3 onClick={() => {
                                                                 setSelectedFormCreate(!selectedFormCreate);
                                                                 handleFormCreate();
-                                                            }} 
-                                                            className={`pluscard ${ selectedFormCreate ? 'active' : ''}`} ref={contentRef} >+</h3>
+                                                            }}
+                                                                className={`pluscard ${selectedFormCreate ? 'active' : ''}`} ref={contentRef} >+</h3>
                                                         </div >
                                                     </div>
                                                     {showFormCreate && (
@@ -354,8 +357,16 @@ export default function NewFormsList() {
                                                                 }
                                                             }}
                                                         />
-                                                        
-                                                        <Button onClick={handleAddQuestion}  type='submit' className="btn btn-success" disabled={loading}>
+                                                        <select
+                                                            value={questionType}
+                                                            onChange={(e) => setQuestionType(e.target.value)}
+                                                            className="form-select mb-2"
+                                                        >
+                                                            <option value="stars">Stars</option>
+                                                            <option value="yesNo">Yes/No</option>
+                                                        </select>
+
+                                                        <Button onClick={handleAddQuestion} type='submit' className="btn btn-success" disabled={loading}>
                                                             {loading ? "Ekleniyor..." : "Soruyu Ekle"}
                                                         </Button>
                                                     </div>
