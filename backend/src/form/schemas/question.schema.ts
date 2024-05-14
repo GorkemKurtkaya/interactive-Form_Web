@@ -16,7 +16,7 @@ export class Question {
   formId: mongoose.Types.ObjectId;
 
   @Prop({ type: [{ userId: mongoose.Types.ObjectId, stars: Number }] })
-  answers: { userId: mongoose.Types.ObjectId; stars: number }[];
+  answers: { userId: mongoose.Types.ObjectId; stars: number}[];
 
   @Prop({ type: Number, default: 1 })
   questionId: number;

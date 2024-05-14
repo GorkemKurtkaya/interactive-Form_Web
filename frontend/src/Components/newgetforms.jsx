@@ -395,7 +395,7 @@ export default function NewFormsList() {
                                                             <option value="stars">Stars</option>
                                                             <option value="yesNo">Yes/No</option>
                                                         </select>
-
+                                                            <br />
                                                         <Button onClick={questionType === 'stars' ? handleAddQuestion : handleAddYesNoQuestion} type='submit' className="denemebutton" disabled={loading}>
                                                             {loading ? "Ekleniyor..." : "Soruyu Ekle"}
                                                         </Button>

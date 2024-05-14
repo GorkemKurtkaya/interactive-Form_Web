@@ -219,6 +219,7 @@ body {
 }
 
 
+
 .gorkem-container {
   display: flex;
   justify-content: center;
@@ -258,6 +259,58 @@ body {
 .denemebutton:hover{
   background-color: #2EE59D;
   box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+.yes-button{
+  background-color: #2EE59D;
+  color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  width: 100px;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  margin: 20px;
+}
+
+.no-button{
+  background-color: #FF0000;
+  color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  width: 100px;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  margin: 20px;
+}
+
+.yes-button:hover{
+  background-color: #2EE59D;
+  box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+} 
+
+.no-button:hover{
+  background-color: #FF0000;
+  box-shadow: 0px 15px 20px rgba(255, 0, 0, 0.4);
   color: #fff;
   transform: translateY(-7px);
 }

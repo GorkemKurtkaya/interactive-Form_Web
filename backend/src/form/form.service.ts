@@ -121,7 +121,7 @@ export class FormService {
     return this.optionModel.find({ questionId: { $in: questionIds } }).exec();
   }
 
-  async saveAnswer(formId: string, questionId: string, userId: string, stars: number): Promise<Question> {
+  async saveAnswer(formId: string, questionId: string, userId: string, stars: number,): Promise<Question> {
     // ObjectId'ye dönüştürme ve geçerlilik kontrolü
     const validFormId = mongoose.Types.ObjectId.isValid(formId);
     const validQuestionId = mongoose.Types.ObjectId.isValid(questionId);
@@ -151,7 +151,7 @@ export class FormService {
       question.answers[userAnswerIndex].stars = stars;
     } else {
       // Kullanıcıya ait cevap yoksa ekle
-      question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars });
+      question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars});
     }
 
     // Soruyu kaydet

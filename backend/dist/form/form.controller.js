@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormController = void 0;
 const common_1 = require("@nestjs/common");
 const form_service_1 = require("./form.service");
+const question_schema_1 = require("./schemas/question.schema");
 const form_dto_1 = require("./dto/form.dto");
 let FormController = class FormController {
     constructor(formService) {
@@ -24,8 +25,8 @@ let FormController = class FormController {
         return this.formService.createForm(formData.name, formData.description);
     }
     async addQuestionToForm(formId, questionData) {
-        const { title, description, questionType } = questionData;
-        const form = await this.formService.addQuestion(formId, title, description, questionType);
+        const { title, description } = questionData;
+        const form = await this.formService.addQuestion(formId, title, description, questionData.questionType);
         return { message: 'Soru başarıyla eklendi', form };
     }
     async getFormDetails(formId) {
@@ -81,7 +82,7 @@ __decorate([
     __param(0, (0, common_1.Param)('formId')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:paramtypes", [String, question_schema_1.Question]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "addQuestionToForm", null);
 __decorate([

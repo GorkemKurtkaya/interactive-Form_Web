@@ -87,41 +87,21 @@ export default function FormShare() {
         try {
             setLoading(true);
             const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
-                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,
+                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,    
                 stars: selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id],
                 userId: userId // Kullanıcı ID'sini gönder
             });
             console.log(response.data);
             setLoading(false);
             handleNextQuestion();
-
+    
             if (currentQuestionIndex === selectedForm.questions.length) {
                 navigate("/thanks");
             }
-
+    
         } catch (error) {
             console.error('Error submitting response:', error);
             setLoading(false);
-        }
-    };
-
-    const handleNextQuestion = () => {
-        const currentQuestion = selectedForm.questions[currentQuestionIndex - 1];
-        const currentQuestionId = currentQuestion._id;
-    
-        if (currentQuestion.questionType === 'stars') {
-            if (selectedStars[currentQuestionId] !== undefined) {
-                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-                setStarSelected(false);
-            } else {
-                alert("Lütfen yıldızları seçerek devam edin.");
-            }
-        } else if (currentQuestion.questionType === 'yesNo') {
-            if (selectedYesNo[currentQuestionId] !== undefined) {
-                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-            } else {
-                alert("Lütfen 'Yes' veya 'No' seçerek devam edin.");
-            }
         }
     };
 
@@ -145,6 +125,28 @@ export default function FormShare() {
             setLoading(false);
         }
     }
+
+    const handleNextQuestion = () => {
+        const currentQuestion = selectedForm.questions[currentQuestionIndex - 1];
+        const currentQuestionId = currentQuestion._id;
+    
+        if (currentQuestion.questionType === 'stars') {
+            if (selectedStars[currentQuestionId] !== undefined) {
+                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+                setStarSelected(false);
+            } else {
+                alert("Lütfen yıldızları seçerek devam edin.");
+            }
+        } else if (currentQuestion.questionType === 'yesNo') {
+            if (selectedYesNo[currentQuestionId] !== undefined) {
+                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+            } else {
+                alert("Lütfen 'Yes' veya 'No' seçerek devam edin.");
+            }
+        }
+    };
+
+
     
 
 
@@ -195,8 +197,8 @@ export default function FormShare() {
                                                                     <StarRateApp onStarSelect={(stars) => onStarSelect(selectedForm.questions[currentQuestionIndex - 1]._id, stars)} value={selectedStars} />
                                                                 ) : selectedForm.questions[currentQuestionIndex - 1].questionType === 'yesNo' ? (
                                                                     <div>
-                                                                        <button className='btn btn-success' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}>Yes</button>
-                                                                        <button className='btn btn-danger' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}>No</button>
+                                                                        <button className='yes-button' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}>Yes</button>
+                                                                        <button className='no-button' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}>No</button>
                                                                     </div>
                                                                 ) : (
                                                                     <div>Question type not supported</div>

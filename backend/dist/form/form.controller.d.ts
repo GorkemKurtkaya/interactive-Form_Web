@@ -8,11 +8,7 @@ export declare class FormController {
     private readonly formService;
     constructor(formService: FormService);
     createForm(formData: FormDto): Promise<Form>;
-    addQuestionToForm(formId: string, questionData: {
-        title: string;
-        description: string;
-        questionType: string;
-    }): Promise<any>;
+    addQuestionToForm(formId: string, questionData: Question): Promise<any>;
     getFormDetails(formId: string): Promise<Form>;
     getAllForms(): Promise<Form[]>;
     getQuestions(formId: string): Promise<Question[]>;

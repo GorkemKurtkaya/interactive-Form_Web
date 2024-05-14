@@ -20,13 +20,12 @@ export class FormController {
   @Post(':formId/questions')
   async addQuestionToForm(
     @Param('formId') formId: string,
-    @Body() questionData: { title: string, description: string, questionType: string }
-  ): Promise<any> {
-    const { title, description, questionType } = questionData;
-    const form = await this.formService.addQuestion(formId, title, description, questionType);
-    return { message: 'Soru başarıyla eklendi', form };
+    @Body() questionData: Question,
+    ): Promise<any> {
+      const { title, description } = questionData;
+      const form = await this.formService.addQuestion(formId, title, description, questionData.questionType);
+      return { message: 'Soru başarıyla eklendi', form };
   }
-
 
 
 
