@@ -71,27 +71,34 @@ export default function FormShare() {
     const handleSubmit = async () => {
         const currentQuestion = selectedForm.questions[currentQuestionIndex - 1];
         const currentQuestionId = currentQuestion._id;
-        
+      
+        const answer = currentQuestion.questionType === 'stars'
+          ? selectedStars[currentQuestionId]
+          : selectedYesNo[currentQuestionId];
+      
         try {
-            setLoading(true);
-            const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${currentQuestionId}/answers`, {
-                questionId: currentQuestionId,
-                answer: currentQuestion.questionType === 'stars' ? selectedStars[currentQuestionId] : selectedYesNo[currentQuestionId],
-                userId: userId // Kullanıcı ID'sini gönder
-            });
-            console.log(response.data);
-            setLoading(false);
-
-            if (currentQuestionIndex === selectedForm.questions.length) {
-                navigate("/thanks");
-            } else {
-                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-            }
+          setLoading(true);
+          const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${currentQuestionId}/answers`, {
+            questionId: currentQuestionId,
+            stars: currentQuestion.questionType === 'stars' ? selectedStars[currentQuestionId] : null,
+            answer: answer,
+            userId: userId
+          });
+          console.log(response.data);
+          setLoading(false);
+      
+          if (currentQuestionIndex === selectedForm.questions.length) {
+            navigate("/thanks");
+          } else {
+            setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+          }
         } catch (error) {
-            console.error('Error submitting response:', error);
-            setLoading(false);
+          console.error('Error submitting response:', error);
+          setLoading(false);
         }
-    };
+      };
+      
+
 
     const handleYesNoAnswer = (questionId, answer) => {
         setSelectedYesNo(prevState => ({
@@ -150,13 +157,13 @@ export default function FormShare() {
                                                                             className={`yes-button ${selectedYesNo[selectedForm.questions[currentQuestionIndex - 1]._id] === 'yes' ? 'selected' : ''}`}
                                                                             onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}
                                                                         >
-                                                                            Yes
+                                                                            Evet
                                                                         </button>
                                                                         <button
                                                                             className={`no-button ${selectedYesNo[selectedForm.questions[currentQuestionIndex - 1]._id] === 'no' ? 'selected' : ''}`}
                                                                             onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}
                                                                         >
-                                                                            No
+                                                                            Hayır
                                                                         </button>
                                                                     </div>
                                                                 ) : (
@@ -173,7 +180,10 @@ export default function FormShare() {
                                                     onClick={handleSubmit}
                                                     className='btn btn-success'
                                                     style={{ marginRight: '10px' }}
-                                                    disabled={selectedForm.questions[currentQuestionIndex - 1].questionType === 'stars' && !starSelected}
+                                                    disabled={
+                                                        (selectedForm.questions[currentQuestionIndex - 1].questionType === 'stars' && !selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id]) ||
+                                                        (selectedForm.questions[currentQuestionIndex - 1].questionType === 'yesNo' && !selectedYesNo[selectedForm.questions[currentQuestionIndex - 1]._id])
+                                                    }
                                                 >
                                                     {currentQuestionIndex === selectedForm.questions.length ? 'Sonucu Gönder' : 'Gönder'}
                                                 </button>

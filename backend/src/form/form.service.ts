@@ -121,23 +121,26 @@ export class FormService {
     return this.optionModel.find({ questionId: { $in: questionIds } }).exec();
   }
 
-  async saveAnswer(formId: string, questionId: string, userId: string, stars: number, answer:string): Promise<Question> {
-    // ObjectId'ye dönüştürme ve geçerlilik kontrolü
+  async saveAnswer(
+    formId: string,
+    questionId: string,
+    userId: string,
+    stars: number,
+    answer: string
+  ): Promise<Question> {
     const validFormId = mongoose.Types.ObjectId.isValid(formId);
     const validQuestionId = mongoose.Types.ObjectId.isValid(questionId);
     const validUserId = mongoose.Types.ObjectId.isValid(userId);
-
+  
     if (!validFormId || !validQuestionId || !validUserId) {
       throw new Error('Invalid IDs');
     }
-
-    // Question belgesini bulma ve işlemlerin devamı
+  
     const question = await this.questionModel.findById(questionId);
     if (!question) {
       throw new Error('Question not found');
     }
-
-    // Kullanıcının cevabını bulma veya yeni cevap ekleme
+  
     let userAnswerIndex = -1;
     for (let i = 0; i < question.answers.length; i++) {
       if (question.answers[i].userId.toString() === userId) {
@@ -145,30 +148,27 @@ export class FormService {
         break;
       }
     }
-
+  
     if (userAnswerIndex !== -1) {
-      // Kullanıcıya ait cevap zaten varsa güncelle
       question.answers[userAnswerIndex].stars = stars;
+      question.answers[userAnswerIndex].answer = answer;
     } else {
-      // Kullanıcıya ait cevap yoksa ekle
-      question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars});
+      question.answers.push({ userId: new mongoose.Types.ObjectId(userId), stars, answer });
     }
-
-    // Soruyu kaydet
+  
     await question.save();
-
-    // Kullanıcı belgesini bulma ve cevapları ekleyin
+  
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-
-    // Kullanıcıya ait cevapları ekle
-    user.answers.push({ questionId: new mongoose.Types.ObjectId(questionId), userId: new mongoose.Types.ObjectId(userId), stars,answer:'' });
+  
+    user.answers.push({ questionId: new mongoose.Types.ObjectId(questionId), userId: new mongoose.Types.ObjectId(userId), stars, answer });
     await user.save();
-
+  
     return question;
   }
+
 
 
   async createUserAndAddToForm(name: string, formId: string): Promise<User> {

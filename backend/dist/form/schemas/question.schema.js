@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", mongoose_2.default.Types.ObjectId)
 ], Question.prototype, "formId", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [{ userId: mongoose_2.default.Types.ObjectId, stars: Number }] }),
+    (0, mongoose_1.Prop)({ type: [{ userId: mongoose_2.default.Types.ObjectId, stars: Number, answer: String }] }),
     __metadata("design:type", Array)
 ], Question.prototype, "answers", void 0);
 __decorate([

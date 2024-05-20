@@ -64,9 +64,10 @@ export class FormController {
     @Param('questionId') questionId: string,
     @Body() body: any,
   ) {
-    const { stars, userId,answer } = body; // Gövdeden userId ve stars değerlerini al
-    return this.formService.saveAnswer(formId, questionId, userId, stars,answer); // saveAnswer yöntemini çağır
+    const { stars, userId, answer } = body; // Gövdeden userId, stars ve answer değerlerini al
+    return this.formService.saveAnswer(formId, questionId, userId, stars, answer); // saveAnswer yöntemini çağır
   }
+  
 
   @Post(":formId/delete")
   async deleteForm(@Param('formId') formId: number): Promise<Form> {

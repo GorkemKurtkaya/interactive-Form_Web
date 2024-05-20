@@ -124,16 +124,17 @@ let FormService = class FormService {
         }
         if (userAnswerIndex !== -1) {
             question.answers[userAnswerIndex].stars = stars;
+            question.answers[userAnswerIndex].answer = answer;
         }
         else {
-            question.answers.push({ userId: new mongoose_3.default.Types.ObjectId(userId), stars });
+            question.answers.push({ userId: new mongoose_3.default.Types.ObjectId(userId), stars, answer });
         }
         await question.save();
         const user = await this.userModel.findById(userId);
         if (!user) {
             throw new Error('User not found');
         }
-        user.answers.push({ questionId: new mongoose_3.default.Types.ObjectId(questionId), userId: new mongoose_3.default.Types.ObjectId(userId), stars, answer: '' });
+        user.answers.push({ questionId: new mongoose_3.default.Types.ObjectId(questionId), userId: new mongoose_3.default.Types.ObjectId(userId), stars, answer });
         await user.save();
         return question;
     }
