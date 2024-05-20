@@ -31,6 +31,7 @@ export declare class User {
         questionId: mongoose.Types.ObjectId;
         userId: mongoose.Types.ObjectId;
         stars: number;
+        answer: string;
     }[];
     userId: number;
 }

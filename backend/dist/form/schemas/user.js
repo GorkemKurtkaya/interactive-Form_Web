@@ -20,7 +20,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "name", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [{ questionId: mongoose_2.default.Types.ObjectId, userId: mongoose_2.default.Types.ObjectId, stars: Number }] }),
+    (0, mongoose_1.Prop)({ type: [{ questionId: mongoose_2.default.Types.ObjectId, userId: mongoose_2.default.Types.ObjectId, stars: Number, answer: String }] }),
     __metadata("design:type", Array)
 ], User.prototype, "answers", void 0);
 __decorate([

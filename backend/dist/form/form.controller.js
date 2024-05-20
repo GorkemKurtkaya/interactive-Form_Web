@@ -45,8 +45,8 @@ let FormController = class FormController {
         return this.formService.getOptions(formId);
     }
     async saveAnswer(formId, questionId, body) {
-        const { stars, userId } = body;
-        return this.formService.saveAnswer(formId, questionId, userId, stars);
+        const { stars, userId, answer } = body;
+        return this.formService.saveAnswer(formId, questionId, userId, stars, answer);
     }
     async deleteForm(formId) {
         return this.formService.deleteForm(formId);

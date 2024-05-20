@@ -22,8 +22,6 @@ export default function FormShare() {
     const [starSelected, setStarSelected] = useState(false);
     const [selectedYesNo, setSelectedYesNo] = useState({});
 
-
-
     const onStarSelect = (index, stars) => {
         setSelectedStars(prevStars => {
             const newStars = [...prevStars];
@@ -39,18 +37,7 @@ export default function FormShare() {
 
     const handleStepSelect = (step) => {
         setCurrentQuestionIndex(step);
-
     };
-
-    // Soru seçildiğinde cevabı ekle
-    const handleQuestionSelect = (questionId, stars) => {
-        setSelectedResponses(prevResponses => [
-            ...prevResponses,
-            { questionId, stars }
-        ]);
-    };
-
-
 
     useEffect(() => {
         const fetchForm = async () => {
@@ -77,78 +64,41 @@ export default function FormShare() {
         fetchForm();
     }, [formId]);
 
-
-
     useEffect(() => {
         console.log("selectedStars: ", selectedStars);
     }, [selectedStars]);
 
     const handleSubmit = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
-                questionId: selectedForm.questions[currentQuestionIndex - 1]._id,    
-                stars: selectedStars[selectedForm.questions[currentQuestionIndex - 1]._id],
-                userId: userId // Kullanıcı ID'sini gönder
-            });
-            console.log(response.data);
-            setLoading(false);
-            handleNextQuestion();
-    
-            if (currentQuestionIndex === selectedForm.questions.length) {
-                navigate("/thanks");
-            }
-    
-        } catch (error) {
-            console.error('Error submitting response:', error);
-            setLoading(false);
-        }
-    };
-
-    const handleYesNoAnswer = async (questionId, answer) => {
-        try {
-            setLoading(true);
-            const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${selectedForm.questions[currentQuestionIndex - 1]._id}/answers`, {
-                questionId: questionId,
-                answer: answer,
-                userId: userId // Kullanıcı ID'sini gönder
-            });
-            console.log(response.data);
-            setSelectedYesNo(prevState => ({
-                ...prevState,
-                [questionId]: answer
-            }));
-            setLoading(false);
-            handleNextQuestion(); // Sıradaki soruya geçiş yap
-        } catch (error) {
-            console.error('Error submitting response:', error);
-            setLoading(false);
-        }
-    }
-
-    const handleNextQuestion = () => {
         const currentQuestion = selectedForm.questions[currentQuestionIndex - 1];
         const currentQuestionId = currentQuestion._id;
-    
-        if (currentQuestion.questionType === 'stars') {
-            if (selectedStars[currentQuestionId] !== undefined) {
-                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-                setStarSelected(false);
+        
+        try {
+            setLoading(true);
+            const response = await axios.post(`http://localhost:3000/forms/${form._id}/questions/${currentQuestionId}/answers`, {
+                questionId: currentQuestionId,
+                answer: currentQuestion.questionType === 'stars' ? selectedStars[currentQuestionId] : selectedYesNo[currentQuestionId],
+                userId: userId // Kullanıcı ID'sini gönder
+            });
+            console.log(response.data);
+            setLoading(false);
+
+            if (currentQuestionIndex === selectedForm.questions.length) {
+                navigate("/thanks");
             } else {
-                alert("Lütfen yıldızları seçerek devam edin.");
-            }
-        } else if (currentQuestion.questionType === 'yesNo') {
-            if (selectedYesNo[currentQuestionId] !== undefined) {
                 setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-            } else {
-                alert("Lütfen 'Yes' veya 'No' seçerek devam edin.");
             }
+        } catch (error) {
+            console.error('Error submitting response:', error);
+            setLoading(false);
         }
     };
 
-
-    
-
+    const handleYesNoAnswer = (questionId, answer) => {
+        setSelectedYesNo(prevState => ({
+            ...prevState,
+            [questionId]: answer
+        }));
+    };
 
     return (
         <div className="container-fluid qform">
@@ -169,7 +119,7 @@ export default function FormShare() {
                                             `Soru ${index + 1}`} />
                                 ))}
                             </Steps>
-    
+
                             {loading ? (
                                 <div>Loading...</div>
                             ) : form ? (
@@ -182,10 +132,9 @@ export default function FormShare() {
                                             onNext={() => setCurrentQuestionIndex(1)} // Sıradaki adıma geçiş
                                         />
                                     )}
-    
+
                                     {currentQuestionIndex > 0 && (
                                         <>
-                                            {/* <h3 className='custom-form' style={{ textAlign: 'center' }}>Soru {currentQuestionIndex} / {selectedForm.questions.length}</h3> */}
                                             <div className="row justify-content-center">
                                                 {selectedForm.questions && (
                                                     <div className="col-md-8 mb-3">
@@ -197,8 +146,18 @@ export default function FormShare() {
                                                                     <StarRateApp onStarSelect={(stars) => onStarSelect(selectedForm.questions[currentQuestionIndex - 1]._id, stars)} value={selectedStars} />
                                                                 ) : selectedForm.questions[currentQuestionIndex - 1].questionType === 'yesNo' ? (
                                                                     <div>
-                                                                        <button className='yes-button' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}>Yes</button>
-                                                                        <button className='no-button' onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}>No</button>
+                                                                        <button
+                                                                            className={`yes-button ${selectedYesNo[selectedForm.questions[currentQuestionIndex - 1]._id] === 'yes' ? 'selected' : ''}`}
+                                                                            onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'yes')}
+                                                                        >
+                                                                            Yes
+                                                                        </button>
+                                                                        <button
+                                                                            className={`no-button ${selectedYesNo[selectedForm.questions[currentQuestionIndex - 1]._id] === 'no' ? 'selected' : ''}`}
+                                                                            onClick={() => handleYesNoAnswer(selectedForm.questions[currentQuestionIndex - 1]._id, 'no')}
+                                                                        >
+                                                                            No
+                                                                        </button>
                                                                     </div>
                                                                 ) : (
                                                                     <div>Question type not supported</div>
@@ -210,7 +169,14 @@ export default function FormShare() {
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                                                 <button onClick={() => setCurrentQuestionIndex(prevIndex => Math.max(0, prevIndex - 1))} className='btn btn-secondary' style={{ marginRight: '10px' }}>Geri</button>
-                                                <button onClick={() => handleSubmit()} className='btn btn-success' style={{ marginRight: '10px' }} disabled={!starSelected}>{currentQuestionIndex === selectedForm.questions.length ? 'Sonucu Gönder' : 'Gönder'}</button>
+                                                <button
+                                                    onClick={handleSubmit}
+                                                    className='btn btn-success'
+                                                    style={{ marginRight: '10px' }}
+                                                    disabled={selectedForm.questions[currentQuestionIndex - 1].questionType === 'stars' && !starSelected}
+                                                >
+                                                    {currentQuestionIndex === selectedForm.questions.length ? 'Sonucu Gönder' : 'Gönder'}
+                                                </button>
                                             </div>
                                         </>
                                     )}
@@ -224,8 +190,4 @@ export default function FormShare() {
             </div>
         </div>
     );
-    
-
-
-
 }

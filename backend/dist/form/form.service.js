@@ -104,7 +104,7 @@ let FormService = class FormService {
         const questionIds = form.questions.map(question => question._id);
         return this.optionModel.find({ questionId: { $in: questionIds } }).exec();
     }
-    async saveAnswer(formId, questionId, userId, stars) {
+    async saveAnswer(formId, questionId, userId, stars, answer) {
         const validFormId = mongoose_3.default.Types.ObjectId.isValid(formId);
         const validQuestionId = mongoose_3.default.Types.ObjectId.isValid(questionId);
         const validUserId = mongoose_3.default.Types.ObjectId.isValid(userId);
@@ -133,7 +133,7 @@ let FormService = class FormService {
         if (!user) {
             throw new Error('User not found');
         }
-        user.answers.push({ questionId: new mongoose_3.default.Types.ObjectId(questionId), userId: new mongoose_3.default.Types.ObjectId(userId), stars });
+        user.answers.push({ questionId: new mongoose_3.default.Types.ObjectId(questionId), userId: new mongoose_3.default.Types.ObjectId(userId), stars, answer: '' });
         await user.save();
         return question;
     }
