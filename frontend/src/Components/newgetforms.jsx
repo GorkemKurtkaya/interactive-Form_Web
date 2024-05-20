@@ -355,8 +355,8 @@ export default function NewFormsList() {
                                                                                 <StarRateApp onStarSelect={(stars) => setSelectedStars(stars)} value={selectedStars} />
                                                                             ) : (
                                                                                 <div>
-                                                                                    <button className='btn btn-success'>Yes</button>
-                                                                                    <button className='btn btn-danger'>No</button>
+                                                                                    <button className='yes-button'>Yes</button>
+                                                                                    <button className='no-button'>No</button>
                                                                                 </div>
                                                                             )}
                                                                             <br />

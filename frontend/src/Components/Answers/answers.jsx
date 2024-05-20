@@ -112,15 +112,19 @@ export default function NewFormsAnswers() {
             dataIndex: 'answers',
             key: `answers${index}`,
             render: (answers) => {
-                if (question.type === 'yesNo') {
-                    const yesCount = answers.filter(answer => answer.questionId === question._id && answer.stars === 1).length;
-                    const noCount = answers.filter(answer => answer.questionId === question._id && answer.stars === 0).length;
-                    return `${yesCount} Yes, ${noCount} No`;
-                }else{}
+                if (!Array.isArray(answers) || answers.length === 0) {
+                    return '-';
+                }
+                if(answers[index + 1].answer === "yes") {
+                    return "Evet";
+                } else if(answers[index + 1].answer === "no") {
+                    return "Hayır";
+                } else {
                 const stars = answers && answers[index + 1]?.stars; // 
-                return stars !== undefined ? stars : '0'; // yılız sayısını döndürür
+                return stars !== undefined ? stars : '0';} // yılız sayısını döndürür
             },
         })),
+        
         {
             title: 'Ortalama',
             dataIndex: 'answers',
@@ -159,7 +163,7 @@ export default function NewFormsAnswers() {
                 <div>
                     <div className="card-body">
                         <div className="row">
-                            {forms.map((form) => (
+                            {forms.map((form, index) => (
                                 <div key={form._id} className="mb-3">
                                     <div className="mycard formCard" onClick={() => handleFormSelect(form._id)}>
                                         <div className='myCardRow'>
