@@ -112,8 +112,13 @@ export default function NewFormsAnswers() {
             dataIndex: 'answers',
             key: `answers${index}`,
             render: (answers) => {
-                const stars = answers && answers[index + 1]?.stars; // Check if answers array exists before accessing its elements
-                return stars !== undefined ? stars : '0'; // Render stars if defined, otherwise '-'
+                if (question.type === 'yesNo') {
+                    const yesCount = answers.filter(answer => answer.questionId === question._id && answer.stars === 1).length;
+                    const noCount = answers.filter(answer => answer.questionId === question._id && answer.stars === 0).length;
+                    return `${yesCount} Yes, ${noCount} No`;
+                }else{}
+                const stars = answers && answers[index + 1]?.stars; // 
+                return stars !== undefined ? stars : '0'; // yılız sayısını döndürür
             },
         })),
         {
@@ -125,8 +130,9 @@ export default function NewFormsAnswers() {
                     return '-';
                 }
 
-                const totalStars = answers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
-                const average = totalStars / answers.length;
+                const starAnswers = answers.filter(answer => answer.stars !== null && answer.stars !== undefined);
+                const totalStars = starAnswers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
+                const average = totalStars / (starAnswers.length || 1);
 
                 return average ? average.toFixed(2) : '-';
             },
