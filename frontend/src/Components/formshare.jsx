@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const { Step } = Steps;
 
 export default function FormShare() {
-    const navigate = useNavigate();
+    const Navigate = useNavigate();
     const [form, setForm] = useState(null);
     const [loading, setLoading] = useState(false);
     const { formId } = useParams();
@@ -88,7 +88,7 @@ export default function FormShare() {
           setLoading(false);
       
           if (currentQuestionIndex === selectedForm.questions.length) {
-            navigate("/thanks");
+            Navigate("/thanks");
           } else {
             setCurrentQuestionIndex(prevIndex => prevIndex + 1);
           }
