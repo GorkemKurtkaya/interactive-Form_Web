@@ -10,6 +10,7 @@ import FormShare from './Components/formshare';
 import Navbar from './Components/navbar';
 import NewFormsList from './Components/newgetforms';
 import { Spinner } from './Components/spinner';
+import PieChart from './Components/Pasta_Grafik/pieChart';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Giriş durumu state'i eklendi
@@ -165,6 +166,11 @@ function App() {
             path='/newformslist'
             element={<NewFormsList />}
           />
+
+          <Route
+          path="/piechart"
+          element={<PieChart />}
+        />
         </Routes>
       )}
 

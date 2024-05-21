@@ -59,32 +59,63 @@ export default function NewFormsAnswers() {
             const questionsResponse = await axios.get(`http://localhost:3000/forms/${formId}/questions`);
             const questions = questionsResponse.data;
             console.log(questions);
+
     
             const answersAverage = questions.map(question => {
+                if (question.questionType === 'yesNo') {
+                  const yesNoAnswers = question.answers.filter(answer => answer.answer === 'yes' || answer.answer === 'no');
+                  const evetCount = yesNoAnswers.filter(answer => answer.answer === 'yes').length;
+                  const hayirCount = yesNoAnswers.filter(answer => answer.answer === 'no').length;
+              
+                  const totalYesNo = evetCount + hayirCount;
+                  const evetPercentage = totalYesNo !== 0 ? (evetCount / totalYesNo) * 100 : 0;
+                  const hayirPercentage = totalYesNo !== 0 ? (hayirCount / totalYesNo) * 100 : 0;
+              
+                  return `${evetCount} Evet (${evetPercentage.toFixed(2)}%) /// ${hayirCount} Hayır (${hayirPercentage.toFixed(2)}%)`;
+                }
+              
                 const totalStars = question.answers.reduce((acc, answer) => acc + (answer.stars || 0), 0); // yıldızları toplar
                 return totalStars / (question.answers.length || 1); // yıldız sayısını soru sayısına böler
-            });
-            console.log(answersAverage);
+              });
+
+            console.log("answerssss", answersAverage);
     
             setSelectedForm(prevState => ({
                 ...prevState,
                 users: usersWithNames,
                 questions: response.data.questions
             }));
-    
+
+
+
+
+
             const totalObject = {
                 name: "Toplam Ortalama",
                 answers: [
                   {
                     questionId: questions[0]?._id,
-                    stars: parseFloat((questions[0].answers.reduce((acc, answer) => acc + (answer.stars || 0), 0) / (questions[0].answers.length || 1)).toFixed(2))
+                    stars: parseFloat(
+                      (
+                        (questions[0]?.answers.reduce((acc, answer) => acc + (answer?.stars || 0), 0) /
+                          (questions[0]?.answers.length || 1)) || NaN
+                      ).toFixed(2)
+                    ),
+                    answer: null
                   },
                   ...answersAverage.map((average, index) => ({
                     questionId: questions[index + 1]?._id,
-                    stars: parseFloat(average.toFixed(2))
-                  }))
+                    stars: typeof average === 'number' ? parseFloat((average || 0).toFixed(2)) : answersAverage[index],
+                    answer: typeof average === 'string' ? average : null
+                  })),
                 ],
               };
+              
+              console.log(totalObject);
+              
+              
+
+ 
             setSelectedForm(prev => ({
                 ...prev,
                 users: [...prev.users, totalObject],
@@ -133,14 +164,27 @@ export default function NewFormsAnswers() {
                 if (!Array.isArray(answers) || answers.length === 0) {
                     return '-';
                 }
-
+        
+                const yesNoAnswers = answers.filter(answer => answer.answer === 'yes' || answer.answer === 'no');
+                const evetCount = yesNoAnswers.filter(answer => answer.answer === 'yes').length;
+                const hayirCount = yesNoAnswers.filter(answer => answer.answer === 'no').length;
+        
                 const starAnswers = answers.filter(answer => answer.stars !== null && answer.stars !== undefined);
                 const totalStars = starAnswers.reduce((acc, answer) => acc + (answer.stars || 0), 0);
                 const average = totalStars / (starAnswers.length || 1);
-
-                return average ? average.toFixed(2) : '-';
+        
+                const totalYesNo = evetCount + hayirCount;
+                const evetPercentage = totalYesNo !== 0 ? (evetCount / totalYesNo) * 100 : 0;
+                const hayirPercentage = totalYesNo !== 0 ? (hayirCount / totalYesNo) * 100 : 0;
+        
+                return (
+                    <>
+                        {average ? average.toFixed(2) : '-'}  <br />{evetCount} Evet ({evetPercentage.toFixed(2)}%), {hayirCount} Hayır ({hayirPercentage.toFixed(2)}%)
+                    </>
+                );
             },
         },
+        
         {
             title: 'Delete',
             dataIndex: 'delete',
