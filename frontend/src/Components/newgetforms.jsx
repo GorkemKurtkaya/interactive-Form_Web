@@ -37,6 +37,8 @@ export default function NewFormsList() {
     const [showEditForm, setShowEditForm] = useState(false);
     const [editFormName, setEditFormName] = useState("");
     const [editFormDescription, setEditFormDescription] = useState("");
+    const [showFormQuestion, setShowFormQuestion] = useState(false);
+    
 
 
 
@@ -62,6 +64,11 @@ export default function NewFormsList() {
         setEditFormDescription(form.description);
         setShowEditForm(!showEditForm);
         setSelectedEditForm(form); // Set selectedEditForm correctly
+        setTimeout(() => {
+            if (contentRef.current) {
+                contentRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 0);
     };
 
     // Formu güncelleme fonksiyonu
@@ -76,7 +83,6 @@ export default function NewFormsList() {
             setLoading(false);
             setShowEditForm(false);
             window.location.reload();
-            contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } catch (error) {
             console.error('Form güncelleme hatası:', error);
             setLoading(false);
@@ -101,9 +107,11 @@ export default function NewFormsList() {
     };
 
     const handleFormCreate = () => {
+        setShowFormQuestion(false);
         setShowFormCreate(true);
         setSelectedFormCreate(true);
-        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanınca sayfa aşağı iniyor
+        setSelectedForm(null); // Önceki formu seçili olmaktan çıkar
+        contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); 
     };
 
 
@@ -122,6 +130,8 @@ export default function NewFormsList() {
     }, []);
 
     const handleFormSelect = async (formId) => {
+        setShowFormQuestion(true);
+        setShowFormCreate(false);
         showEditForm && setShowEditForm(false);
         try {
             setLoading(true);
@@ -343,12 +353,12 @@ export default function NewFormsList() {
                                             {selectedFormCreate && (
                                                 <div className="row">
                                                     <div className=" col-md-12 mb-3 mb-4 ">
-                                                        <div>
+                                                        <div ref={contentRef}>
                                                             <h3 onClick={() => {
                                                                 setSelectedFormCreate(!selectedFormCreate);
                                                                 handleFormCreate();
                                                             }}
-                                                                className={`pluscard ${selectedFormCreate ? 'active' : ''}`} ref={contentRef} >+</h3>
+                                                                className={`pluscard ${selectedFormCreate ? 'active' : ''}`}  >+</h3>
                                                         </div >
                                                     </div>
                                                     {showFormCreate && (
@@ -427,8 +437,8 @@ export default function NewFormsList() {
                                             {/* <Link to="/formcreate" type='button' className="formolusturbtn btn btn-outline-primary btn-sm justify position-absolute bottom-0 start-0">Form Oluştur</Link> */}
                                         </div>
                                     </div>
-                                    <>
-                                        {showEditForm  && (
+                                    <div ref={contentRef}>
+                                        {showEditForm && (
                                             <EditForm
                                                 name={editFormName}
                                                 description={editFormDescription}
@@ -436,10 +446,9 @@ export default function NewFormsList() {
                                                 onDescriptionChange={(e) => setEditFormDescription(e.target.value)}
                                                 onSave={() => handleUpdateForm(selectedEditForm._id)}
                                                 onCancel={() => setShowEditForm(false)}
-
                                             />
                                         )}
-                                    </>
+                                    </div>
                                 </div>
 
                             )}
