@@ -7,11 +7,12 @@ import FormCreate from './formcreate';
 import classNames from 'classnames';
 import './container-navbar/containernavbar.css';
 import ContainerNavbar from './container-navbar/containernavbar';
-import Sign from './login-signup';
-import { EditFormComponent } from './editFormComponent';
+import Sign from './Login-signup/login-signup';
+import EditForm from './editFormComponent';
 import { Button, Modal, Space, message } from 'antd';
 import NewFormsAnswers from './Answers/answers';
 import { useNavigate } from 'react-router-dom';
+
 
 
 
@@ -33,6 +34,9 @@ export default function NewFormsList() {
     const contentRef = useRef(null);
     const [open, setOpen] = useState(false);
     const [questionType, setQuestionType] = useState('stars'); // Default to 'stars'
+    const [showEditForm, setShowEditForm] = useState(false);
+    const [editFormName, setEditFormName] = useState("");
+    const [editFormDescription, setEditFormDescription] = useState("");
 
 
 
@@ -51,6 +55,45 @@ export default function NewFormsList() {
 
 
 
+    // EditForm'u açma fonksiyonu
+    const handleEditFormToggle = (form) => {
+        console.log("Form Data:", form); // Check form data
+        setEditFormName(form.name);
+        setEditFormDescription(form.description);
+        setShowEditForm(!showEditForm);
+        setSelectedEditForm(form); // Set selectedEditForm correctly
+    };
+
+    // Formu güncelleme fonksiyonu
+    const handleUpdateForm = async (formId) => {
+        try {
+            setLoading(true);
+            const response = await axios.post(`http://localhost:3000/forms/${formId}/edit`, {
+                name: editFormName,
+                description: editFormDescription,
+            });
+            setSelectedForm(response.data.form);
+            setLoading(false);
+            setShowEditForm(false);
+            window.location.reload();
+            contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (error) {
+            console.error('Form güncelleme hatası:', error);
+            setLoading(false);
+        }
+    };
+
+    const handledeleteForm = async (formId) => {
+        try {
+            setLoading(true);
+            const response = await axios.post(`http://localhost:3000/forms/${formId}/delete`);
+            setSelectedForm(response.data.form);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error deleting form:', error);
+            setLoading(false);
+        }
+    }
 
 
     const onStarSelect = (stars) => {
@@ -62,6 +105,8 @@ export default function NewFormsList() {
         setSelectedFormCreate(true);
         contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); // ScrollIntoView kullanınca sayfa aşağı iniyor
     };
+
+
 
 
     useEffect(() => {
@@ -77,6 +122,7 @@ export default function NewFormsList() {
     }, []);
 
     const handleFormSelect = async (formId) => {
+        showEditForm && setShowEditForm(false);
         try {
             setLoading(true);
             const response = await axios.get(`http://localhost:3000/forms/${formId}`);
@@ -112,29 +158,8 @@ export default function NewFormsList() {
         }
     };
 
-    const handleEditForm = async (formId) => {
-        try {
-            setLoading(true);
-            const response = await axios.post(`http://localhost:3000/forms/${formId}/edit`);
-            setSelectedForm(response.data.form);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error editing form:', error);
-            setLoading(false);
-        }
-    }
 
-    const handledeleteForm = async (formId) => {
-        try {
-            setLoading(true);
-            const response = await axios.post(`http://localhost:3000/forms/${formId}/delete`);
-            setSelectedForm(response.data.form);
-            window.location.reload();
-        } catch (error) {
-            console.error('Error deleting form:', error);
-            setLoading(false);
-        }
-    }
+
 
     const handleDeleteQuestion = async (selectedQuestion, questionId) => {
         try {
@@ -146,7 +171,7 @@ export default function NewFormsList() {
             setLoading(false);
         }
     }
-    const handleAddYesNoQuestion= async () => {
+    const handleAddYesNoQuestion = async () => {
         try {
             setLoading(true);
             const response = await axios.post(`http://localhost:3000/forms/${selectedForm._id}/questions`, {
@@ -228,12 +253,6 @@ export default function NewFormsList() {
                         </span>
                         <span className="gorkem-text">Deneme</span>
                     </li>
-                    {/* <li
-                        className={`gorkem-sign-button btn-lg ${selectedOption === 'sign' ? 'active' : ''}`}
-                        onClick={() => setSelectedOption('sign')}
-                    >
-                        Sign
-                    </li> */}
                 </ul>
 
 
@@ -297,7 +316,10 @@ export default function NewFormsList() {
                                                                             <span className="visually-hidden"></span>
                                                                         </Button>
                                                                     </Space>
-                                                                    <Button onClick={(event) => { event.stopPropagation(); setSelectedEditForm(form._id) }} type='default'>
+                                                                    <Button onClick={(event) => {
+                                                                        event.stopPropagation();
+                                                                        handleEditFormToggle(form);
+                                                                    }} type='default'>
                                                                         <i className="bi bi-edit"></i>
                                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"></path></svg>
                                                                     </Button>
@@ -395,7 +417,7 @@ export default function NewFormsList() {
                                                             <option value="stars">Stars</option>
                                                             <option value="yesNo">Yes/No</option>
                                                         </select>
-                                                            <br />
+                                                        <br />
                                                         <Button onClick={questionType === 'stars' ? handleAddQuestion : handleAddYesNoQuestion} type='submit' className="denemebutton" disabled={loading}>
                                                             {loading ? "Ekleniyor..." : "Soruyu Ekle"}
                                                         </Button>
@@ -405,8 +427,20 @@ export default function NewFormsList() {
                                             {/* <Link to="/formcreate" type='button' className="formolusturbtn btn btn-outline-primary btn-sm justify position-absolute bottom-0 start-0">Form Oluştur</Link> */}
                                         </div>
                                     </div>
-                                </div>
+                                    <>
+                                        {showEditForm && (
+                                            <EditForm
+                                                name={editFormName}
+                                                description={editFormDescription}
+                                                onNameChange={(e) => setEditFormName(e.target.value)}
+                                                onDescriptionChange={(e) => setEditFormDescription(e.target.value)}
+                                                onSave={() => handleUpdateForm(selectedEditForm._id)}
+                                                onCancel={() => setShowEditForm(false)}
 
+                                            />
+                                        )}
+                                    </>
+                                </div>
 
                             )}
                             {selectedCategory === "Yanıtlar" && (
@@ -419,7 +453,8 @@ export default function NewFormsList() {
 
                         </div>
                     )}
-                    {selectedEditForm && (<EditFormComponent form={selectedEditForm} />)}
+
+
                     {selectedOption === 'deneme' && (<div>
                         <div className='gorkem-content-container'>
                             <BasicInfo />

@@ -141,7 +141,7 @@ __decorate([
     __param(0, (0, common_1.Param)('formId')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, form_dto_1.FormDto]),
+    __metadata("design:paramtypes", [String, form_dto_1.FormDto]),
     __metadata("design:returntype", Promise)
 ], FormController.prototype, "editForm", null);
 __decorate([

@@ -35,7 +35,7 @@ export declare class FormService {
     constructor(formModel: Model<FormDocument>, questionModel: Model<QuestionDocument>, optionModel: Model<OptionDocument>, userModel: Model<User>);
     createForm(name: string, description: string): Promise<Form>;
     deleteForm(formId: number): Promise<Form>;
-    editForm(formId: number, name: string, description: string): Promise<Form>;
+    editForm(formId: string, name: string, description: string): Promise<Form>;
     addQuestion(formId: string, title: string, description: string, questionType: string): Promise<Form>;
     getAllForms(): Promise<Form[]>;
     getFormDetails(formId: string): Promise<Form>;

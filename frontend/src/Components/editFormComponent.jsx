@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
-export function EditFormComponent({form}) {
-    
-    // form.id =>  istek
+import React from 'react';
+import { Button, Input } from 'antd';
 
-    const [baslik, setBaslik] = useState(form.baslik);
-
-    const handlebaslikChange = (e) => {
-        setBaslik(e.target.value);
-    }
-    //
+const EditForm = ({ name, description, onNameChange, onDescriptionChange, onSave, onCancel }) => {
     return (
         <div>
-            <input value={baslik} onChange={handlebaslikChange} />
+            <Input
+                placeholder="Form Name"
+                value={name}
+                onChange={onNameChange}
+            />
+            <Input
+                placeholder="Form Description"
+                value={description}
+                onChange={onDescriptionChange}
+            />
+            <Button type="primary" onClick={onSave}>Save</Button>
+            <Button onClick={onCancel}>Cancel</Button>
         </div>
-    )
-}
+    );
+};
+
+export default EditForm;

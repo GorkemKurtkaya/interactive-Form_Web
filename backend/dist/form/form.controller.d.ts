@@ -16,7 +16,7 @@ export declare class FormController {
     getOptions(formId: string): Promise<Option[]>;
     saveAnswer(formId: string, questionId: string, body: any): Promise<Question>;
     deleteForm(formId: number): Promise<Form>;
-    editForm(formId: number, formData: FormDto): Promise<Form>;
+    editForm(formId: string, formData: FormDto): Promise<Form>;
     deleteQuestion(formId: string, questionId: string): Promise<Question>;
     createUser(formId: string, body: {
         name: string;

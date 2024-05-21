@@ -75,8 +75,8 @@ export class FormController {
   }
 
   @Post(":formId/edit")
-  async editForm(@Param('formId') formId: number, @Body() formData: FormDto): Promise<Form> {
-    return this.formService.editForm(formId, formData.name, formData.description);
+  async editForm(@Param('formId') formId: string, @Body() formData: FormDto): Promise<Form> {
+      return this.formService.editForm(formId, formData.name, formData.description);
   }
 
   @Post(':formId/questions/:questionId/delete')

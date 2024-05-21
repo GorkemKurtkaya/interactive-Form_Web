@@ -40,13 +40,13 @@ export class FormService {
     return form;
   }
 
-  async editForm(formId: number, name: string, description: string): Promise<Form> {
+  async editForm(formId: string, name: string, description: string): Promise<Form> {
     const form = await this.formModel.findByIdAndUpdate(formId, { name, description }, { new: true }).exec();
     if (!form) {
-      throw new Error('Form not found');
+        throw new Error('Form not found');
     }
     return form;
-  }
+}
 
   async addQuestion(
     formId: string,
